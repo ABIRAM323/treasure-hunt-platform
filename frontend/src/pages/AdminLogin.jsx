@@ -1,21 +1,24 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
 
 export default function AdminLogin() {
     const { adminLogin } = useAuth();
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [form, setForm] = useState({ username: '', password: '' });
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
         try {
-            await adminLogin(username, password);
+            const { data } = await api.post('/auth/admin-login', form);
+            adminLogin(data.token, data.admin);
             navigate('/admin');
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid admin credentials.');
@@ -25,68 +28,67 @@ export default function AdminLogin() {
     };
 
     return (
-        <div className="page-center">
-            <div className="login-bg-admin" aria-hidden="true" />
-            <div className="animate-slide-up" style={{ width: '100%', maxWidth: '420px' }}>
-                <div className="text-center" style={{ marginBottom: '2.5rem' }}>
-                    <div style={{ fontSize: '2.8rem', display: 'block', marginBottom: '0.5rem', color: 'var(--neon-purple)', textShadow: '0 0 20px rgba(184,77,255,0.7)', animation: 'float 3s ease-in-out infinite' }}>⚙</div>
-                    <h1 style={{ color: 'var(--neon-purple)', fontSize: '1.6rem', fontFamily: 'var(--font-display)', letterSpacing: '0.12em' }}>ADMIN PORTAL</h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.18em', marginTop: '0.25rem' }}>RESTRICTED ACCESS</p>
+        <div className="page-center" style={{ background: 'var(--bg-primary)', minHeight: '100vh', padding: '1.5rem 1rem' }}>
+            <div style={{ width: '100%', maxWidth: '420px' }}>
+                {/* Logo */}
+                <div className="text-center animate-slide-up" style={{ marginBottom: '2rem' }}>
+                    <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '0.75rem' }}>⚙️</div>
+                    <h1 style={{ fontFamily: 'var(--font-display)', color: 'var(--neon-purple)', textShadow: '0 0 20px rgba(184,77,255,0.4)', fontSize: 'clamp(1.2rem, 5vw, 1.8rem)' }}>
+                        ADMIN ACCESS
+                    </h1>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-muted)', letterSpacing: '0.15em', marginTop: '0.25rem' }}>
+                        RESTRICTED — ORGANIZERS ONLY
+                    </p>
                 </div>
 
-                <div className="card" style={{ borderColor: 'rgba(184,77,255,0.3)', boxShadow: '0 0 30px rgba(184,77,255,0.15)' }}>
-                    <h2 style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>Administrator Login</h2>
-                    <p style={{ marginBottom: '1.75rem', fontSize: '0.85rem' }}>Authorized personnel only</p>
+                {/* Login Card */}
+                <div className="card animate-fade-in" style={{ borderColor: 'rgba(184,77,255,0.3)', boxShadow: '0 0 30px rgba(184,77,255,0.1)' }}>
+                    <h2 style={{ marginBottom: '0.5rem', fontSize: '1.1rem' }}>Admin Login</h2>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.82rem', marginBottom: '1.5rem' }}>
+                        Control the hunt, view scores, manage teams.
+                    </p>
 
-                    {error && <div className="alert alert-error" style={{ marginBottom: '1.25rem' }}>⚠️ {error}</div>}
+                    {error && <div className="alert alert-error" style={{ marginBottom: '1rem' }}>{error}</div>}
 
-                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <div className="form-group">
-                            <label className="form-label" htmlFor="uname" style={{ color: 'var(--neon-purple)' }}>Username</label>
+                            <label className="form-label" htmlFor="username">Username</label>
                             <input
-                                id="uname"
+                                id="username"
                                 className="form-input"
-                                style={{ '--input-focus-color': 'var(--neon-purple)' }}
                                 type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                value={form.username}
+                                onChange={set('username')}
                                 placeholder="admin"
                                 required
                                 autoComplete="username"
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-label" htmlFor="apassword" style={{ color: 'var(--neon-purple)' }}>Password</label>
+                            <label className="form-label" htmlFor="admin-password">Password</label>
                             <input
-                                id="apassword"
+                                id="admin-password"
                                 className="form-input"
                                 type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                value={form.password}
+                                onChange={set('password')}
                                 placeholder="Admin password"
                                 required
                                 autoComplete="current-password"
                             />
                         </div>
-                        <button className="btn btn-purple btn-lg w-full" type="submit" disabled={loading}>
-                            {loading ? (
-                                <><span className="spinner" style={{ width: 18, height: 18, borderWidth: 2 }} /> Verifying…</>
-                            ) : '→ Access Dashboard'}
+                        <button type="submit" className="btn w-full" style={{ marginTop: '0.5rem', background: 'linear-gradient(135deg,#660099,#b84dff)', color: '#fff' }} disabled={loading}>
+                            {loading ? <><span className="spinner" style={{ width: 18, height: 18, borderWidth: 2, borderTopColor: '#fff' }} /> Verifying…</> : '→ Access Control Panel'}
                         </button>
                     </form>
+                </div>
 
-                    <div className="divider" />
-                    <div className="text-center">
-                        <Link to="/login" style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>← Back to Team Login</Link>
-                    </div>
+                <div className="text-center" style={{ marginTop: '1.5rem' }}>
+                    <Link to="/login" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                        ← Back to Team Login
+                    </Link>
                 </div>
             </div>
-
-            <style>{`
-        .login-bg-admin { position: fixed; inset: 0; pointer-events: none; z-index: -1;
-          background: radial-gradient(ellipse 60% 50% at 50% 30%, rgba(184,77,255,0.07) 0%, transparent 70%); }
-        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-      `}</style>
         </div>
     );
 }
