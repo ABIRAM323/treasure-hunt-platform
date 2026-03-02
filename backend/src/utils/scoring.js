@@ -105,7 +105,8 @@ const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0
  * @param {number} totalPhysicalTechnical 
  */
 const isFinalBossUnlocked = (completedCount, totalPhysicalTechnical) => {
-    return completedCount >= Math.ceil(totalPhysicalTechnical * 0.7);
+    // Require 100% of normal clues to be completed before unlocking final bosses
+    return completedCount >= totalPhysicalTechnical;
 };
 
 module.exports = { calculateScore, buildClueOrder, isFinalBossUnlocked, FINAL_BOSS_BONUS };
