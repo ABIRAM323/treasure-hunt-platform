@@ -17,8 +17,7 @@ export default function AdminLogin() {
         setError('');
         setLoading(true);
         try {
-            const { data } = await api.post('/auth/admin-login', form);
-            adminLogin(data.token, data.admin);
+            await adminLogin(form.username, form.password);
             navigate('/admin');
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid admin credentials.');

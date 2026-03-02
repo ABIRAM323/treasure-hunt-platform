@@ -17,11 +17,7 @@ export default function TeamLogin() {
         setError('');
         setLoading(true);
         try {
-            const { data } = await api.post('/auth/team-login', {
-                teamId: form.teamId.toUpperCase(),
-                password: form.password,
-            });
-            teamLogin(data.token, data.team);
+            await teamLogin(form.teamId.toUpperCase(), form.password);
             navigate('/dashboard');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Check your credentials.');
