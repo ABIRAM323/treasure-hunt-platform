@@ -1,12 +1,11 @@
 services:
   - type: web
-    name: treasure-hunt-backend
+    name: treasure-hunt
     env: node
     region: singapore
     plan: free
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: npm install --prefix frontend && npm run build --prefix frontend && npm install --prefix backend
+    startCommand: node backend/src/server.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -24,5 +23,3 @@ services:
         sync: false
       - key: QR_SECRET
         sync: false
-      - key: CLIENT_URL
-        value: https://treasure-hunt-backend.onrender.com
