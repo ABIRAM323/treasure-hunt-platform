@@ -34,6 +34,10 @@ const clueSchema = new mongoose.Schema(
             type: String,
             select: false, // Never leak QR hash to frontend
         },
+        hasQR: {
+            type: Boolean,
+            default: true,
+        },
         locationName: {
             type: String,
             default: '',

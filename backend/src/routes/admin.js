@@ -138,29 +138,29 @@ router.post('/teams/:id/override-clue', requireAdmin, async (req, res) => {
 
 // GET all clues (with answers for admin)
 router.get('/clues', requireAdmin, async (req, res) => {
-    const clues = await Clue.find().select('+answer +qrHash').sort({ clueNumber: 1 });
+    const clues = await Clue.find().select('+answer +qrHash +hasQR').sort({ clueNumber: 1 });
     res.json({ success: true, clues });
 });
 
 // GET single clue
 router.get('/clues/:id', requireAdmin, async (req, res) => {
-    const clue = await Clue.findById(req.params.id).select('+answer +qrHash');
+    const clue = await Clue.findById(req.params.id).select('+answer +qrHash +hasQR');
     if (!clue) return res.status(404).json({ success: false, message: 'Clue not found' });
     res.json({ success: true, clue });
 });
 
 // POST create clue
 router.post('/clues', requireAdmin, async (req, res) => {
-    const { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint } = req.body;
+    const { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint, hasQR } = req.body;
     if (!clueNumber || !type || !difficulty || !title || !clueText || !answer) {
         return res.status(400).json({ success: false, message: 'Missing required clue fields' });
     }
 
-    const clueData = { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint };
+    const clueData = { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint, hasQR: hasQR !== undefined ? hasQR : true };
 
     const clue = await Clue.create(clueData);
 
-    // Generate QR hash for ALL clues (so admins can print a QR for any clue)
+    // Generate QR hash for ALL clues (so admins can print a QR for any clue if enabled)
     clue.qrHash = generateQRHash(clue._id.toString());
     await clue.save();
 

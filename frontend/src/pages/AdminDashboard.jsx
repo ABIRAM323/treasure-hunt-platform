@@ -347,7 +347,9 @@ export default function AdminDashboard() {
                                                 <td style={{ fontSize: '0.8rem' }}>{clue.locationName || '—'}</td>
                                                 <td>
                                                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                                        <button onClick={() => showQR(clue._id)} className="btn btn-cyan btn-sm">QR</button>
+                                                        {clue.hasQR && (
+                                                            <button onClick={() => showQR(clue._id)} className="btn btn-cyan btn-sm">QR</button>
+                                                        )}
                                                         <button onClick={() => setClueModal(clue)} className="btn btn-ghost btn-sm">Edit</button>
                                                         <button onClick={() => deleteClue(clue._id)} className="btn btn-danger btn-sm">✕</button>
                                                     </div>
@@ -555,6 +557,7 @@ function ClueFormModal({ clue, onClose, onSave }) {
         locationName: clue.locationName || '',
         points: clue.points || 200,
         hint: clue.hint || '',
+        hasQR: clue.hasQR !== undefined ? clue.hasQR : true,
     });
     const [saving, setSaving] = useState(false);
     const [err, setErr] = useState('');
@@ -615,6 +618,12 @@ function ClueFormModal({ clue, onClose, onSave }) {
                         <label className="form-label">Clue Text</label>
                         <textarea className="form-input" value={form.clueText} onChange={set('clueText')} rows={4} required />
                     </div>
+
+                    <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <input type="checkbox" checked={form.hasQR} onChange={(e) => setForm(f => ({ ...f, hasQR: e.target.checked }))} id="hasQRCheck" style={{ width: 'auto', marginRight: '0.5rem' }} />
+                        <label className="form-label" htmlFor="hasQRCheck" style={{ marginBottom: 0, textTransform: 'none', letterSpacing: 'normal' }}>Enable QR code scanning for this clue</label>
+                    </div>
+
                     <div className="form-group">
                         <label className="form-label">Answer (case-insensitive match)</label>
                         <input className="form-input" value={form.answer} onChange={set('answer')} required />

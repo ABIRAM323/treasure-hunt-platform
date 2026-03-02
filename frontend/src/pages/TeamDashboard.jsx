@@ -189,49 +189,48 @@ export default function TeamDashboard() {
                             </div>
                         )}
 
-                        {/* Action: QR Scan (Now available for all clue types) */}
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            {clue.type === 'physical' ? (
-                                <p style={{ marginBottom: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+                        {/* Action Area */}
+                        <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            {clue.type === 'physical' && clue.hasQR !== false ? (
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                                     Navigate to the location and scan the QR code to proceed.
                                 </p>
-                            ) : (
-                                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
-                                    <div className="divider" style={{ flex: 1, margin: 0 }} />
-                                    <span style={{ padding: '0 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>OR</span>
-                                    <div className="divider" style={{ flex: 1, margin: 0 }} />
-                                </div>
+                            ) : null}
+
+                            {/* Render Text Form for Tech/Final */}
+                            {(clue.type === 'technical' || clue.type === 'final') && (
+                                <form onSubmit={handleAnswerSubmit} style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                    <input
+                                        id="answer-input"
+                                        className="form-input"
+                                        type="text"
+                                        value={answer}
+                                        onChange={(e) => setAnswer(e.target.value)}
+                                        placeholder="Type your answer…"
+                                        required
+                                        style={{ flex: '1', minWidth: '200px' }}
+                                    />
+                                    <button className={`btn ${clue.type === 'final' ? 'btn-purple' : 'btn-primary'}`} type="submit" disabled={submitting}>
+                                        {submitting ? <><span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} /> Checking…</> : '→ Submit'}
+                                    </button>
+                                </form>
                             )}
 
-                            <button className="btn btn-ghost btn-sm w-full" onClick={() => setShowQR((v) => !v)} style={{ borderStyle: 'dashed' }}>
-                                {showQR ? '✕ Hide Scanner' : '📷 Scan QR Code Instead'}
-                            </button>
+                            {/* Conditionally Render QR Scanner Option */}
+                            {clue.hasQR !== false && (
+                                <div style={{ borderTop: (clue.type === 'technical' || clue.type === 'final') ? '1px dashed var(--border-subtle)' : 'none', paddingTop: (clue.type === 'technical' || clue.type === 'final') ? '1rem' : 0 }}>
+                                    <button className="btn btn-ghost btn-sm w-full" onClick={() => setShowQR((v) => !v)} style={{ borderStyle: 'dashed' }}>
+                                        {showQR ? '✕ Hide Scanner' : clue.type === 'physical' ? '📷 Open Scanner' : '📷 Or Scan QR Code Instead'}
+                                    </button>
 
-                            {showQR && (
-                                <div style={{ marginTop: '1.25rem' }}>
-                                    <QRScanner onSuccess={handleQRSuccess} />
+                                    {showQR && (
+                                        <div style={{ marginTop: '1.25rem' }}>
+                                            <QRScanner onSuccess={handleQRSuccess} />
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
-
-                        {/* Action: Text Answer */}
-                        {(clue.type === 'technical' || clue.type === 'final') && (
-                            <form onSubmit={handleAnswerSubmit} style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-                                <input
-                                    id="answer-input"
-                                    className="form-input"
-                                    type="text"
-                                    value={answer}
-                                    onChange={(e) => setAnswer(e.target.value)}
-                                    placeholder="Type your answer…"
-                                    required
-                                    style={{ flex: '1', minWidth: '200px' }}
-                                />
-                                <button className={`btn ${clue.type === 'final' ? 'btn-purple' : 'btn-primary'}`} type="submit" disabled={submitting}>
-                                    {submitting ? <><span className="spinner" style={{ width: 16, height: 16, borderWidth: 2 }} /> Checking…</> : '→ Submit'}
-                                </button>
-                            </form>
-                        )}
                     </div>
                 )}
             </div>
