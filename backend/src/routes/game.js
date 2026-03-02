@@ -101,7 +101,7 @@ router.post('/submit-answer', requireTeam, submissionLimiter, async (req, res) =
     // Get clue WITH answer (server only!)
     const currentClue = await Clue.findById(team.clueOrder[team.currentClueIndex]._id).select('+answer');
 
-    if (currentClue.type === 'physical') {
+    if (currentClue.type === 'physical' && currentClue.hasQR !== false) {
         return res.status(400).json({ success: false, message: 'This clue requires QR scanning, not a text answer.' });
     }
 

@@ -197,8 +197,8 @@ export default function TeamDashboard() {
                                 </p>
                             ) : null}
 
-                            {/* Render Text Form for Tech/Final */}
-                            {(clue.type === 'technical' || clue.type === 'final') && (
+                            {/* Render Text Form for Tech/Final or Physical without QR */}
+                            {(clue.type === 'technical' || clue.type === 'final' || (clue.type === 'physical' && clue.hasQR === false)) && (
                                 <form onSubmit={handleAnswerSubmit} style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                                     <input
                                         id="answer-input"
