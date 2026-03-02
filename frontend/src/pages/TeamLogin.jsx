@@ -32,11 +32,11 @@ export default function TeamLogin() {
                 {/* Logo */}
                 <div className="text-center animate-slide-up" style={{ marginBottom: '2rem' }}>
                     <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '0.75rem', animation: 'float 3s ease-in-out infinite' }}>🗺</div>
-                    <h1 style={{ fontFamily: 'var(--font-display)', color: 'var(--neon-green)', textShadow: '0 0 20px rgba(0,255,136,0.4)', fontSize: 'clamp(1.2rem, 5vw, 1.8rem)' }}>
-                        TECH FEST
+                    <h1 style={{ fontFamily: 'var(--font-display)', color: 'var(--neon-green)', textShadow: '0 0 20px rgba(255,15,15,0.4)', fontSize: 'clamp(1.2rem, 5vw, 1.8rem)' }}>
+                        ASTRAL
                     </h1>
                     <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-muted)', letterSpacing: '0.2em', marginTop: '0.25rem' }}>
-                        SMART TREASURE HUNT
+                        TREASURE HUNT
                     </p>
                 </div>
 
