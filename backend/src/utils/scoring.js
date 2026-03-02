@@ -65,19 +65,30 @@ const FINAL_BOSS_BONUS = 500;
  * @returns {Array} ordered clue IDs
  */
 const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0) => {
-    // Combine and sort by clueNumber to get a reliable base sequence
-    const normalClues = [...physicalClues, ...technicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
+    // Sort clues by number
+    const sortedP = [...physicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
+    const sortedT = [...technicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
 
-    // Safety check just in case there are no normal clues
-    if (normalClues.length === 0) {
+    // Interleave P and T: P1, T1, P2, T2...
+    const interleaved = [];
+    const maxLength = Math.max(sortedP.length, sortedT.length);
+    for (let i = 0; i < maxLength; i++) {
+        if (i < sortedP.length) interleaved.push(sortedP[i]);
+        if (i < sortedT.length) interleaved.push(sortedT[i]);
+    }
+
+    if (interleaved.length === 0) {
         return finalClues.sort((a, b) => a.clueNumber - b.clueNumber).map((c) => c._id);
     }
 
-    // Shift the pattern cyclically based on the team's index
-    const shift = Math.max(0, teamIndex) % normalClues.length;
+    // Shift the pattern cyclically based on the team's index (shifting by pairs)
+    const pairsCount = Math.floor(interleaved.length / 2);
+    const shiftPairs = pairsCount > 0 ? (Math.max(0, teamIndex) % pairsCount) : 0;
+    const shiftIndex = shiftPairs * 2;
+
     const shiftedNormalClues = [
-        ...normalClues.slice(shift),
-        ...normalClues.slice(0, shift)
+        ...interleaved.slice(shiftIndex),
+        ...interleaved.slice(0, shiftIndex)
     ];
 
     // Final boss clues come at the end, sorted deterministically
