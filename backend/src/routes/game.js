@@ -68,6 +68,7 @@ router.get('/current-clue', requireTeam, async (req, res) => {
             locationCoords: currentClue.locationCoords,
             points: currentClue.points,
             hint: attempt && attempt.attemptCount >= 3 ? currentClue.hint : null,
+            hasQR: currentClue.hasQR !== false,
         },
         progress: {
             completed: completedCount,
