@@ -1,0 +1,33 @@
+import axios from 'axios';
+
+// In production (served from Express), VITE_API_URL is empty → uses relative /api/*
+// In dev with Vite proxy, VITE_API_URL is also empty → Vite proxies /api to localhost:5000
+// When a custom backend URL is needed (e.g. separate deployment), set VITE_API_URL in .env
+const BASE_URL = import.meta.env.VITE_API_URL || '';
+
+const api = axios.create({
+    baseURL: `${BASE_URL}/api`,
+    headers: { 'Content-Type': 'application/json' },
+});
+
+// Attach JWT token to every request
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+    return config;
+});
+
+// Handle 401 globally
+api.interceptors.response.use(
+    (res) => res,
+    (err) => {
+        if (err.response?.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+        }
+        return Promise.reject(err);
+    }
+);
+
+export default api;
