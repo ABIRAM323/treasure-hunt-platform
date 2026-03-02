@@ -31,7 +31,11 @@ export default function TeamLogin() {
             <div style={{ width: '100%', maxWidth: '420px' }}>
                 {/* Logo */}
                 <div className="text-center animate-slide-up" style={{ marginBottom: '2rem' }}>
-                    <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '0.75rem', animation: 'float 3s ease-in-out infinite' }}>🗺</div>
+                    <img
+                        src="/astral-logo.png"
+                        alt="ASTRAL Logo"
+                        style={{ width: '100px', height: '100px', objectFit: 'contain', marginBottom: '0.75rem', filter: 'drop-shadow(0 0 15px rgba(255, 15, 15, 0.5))' }}
+                    />
                     <h1 style={{ fontFamily: 'var(--font-display)', color: 'var(--neon-green)', textShadow: '0 0 20px rgba(255,15,15,0.4)', fontSize: 'clamp(1.2rem, 5vw, 1.8rem)' }}>
                         ASTRAL
                     </h1>

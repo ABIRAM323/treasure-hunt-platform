@@ -18,7 +18,10 @@ export default function Navbar({ title }) {
         <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 100 }}>
             {/* Left: brand */}
             <Link to={isAdmin ? '/admin' : '/dashboard'} style={{ textDecoration: 'none' }}>
-                <span className="navbar-brand">⬡ HUNT</span>
+                <span className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <img src="/astral-logo.png" alt="logo" style={{ height: '28px', width: 'auto', filter: 'drop-shadow(0 0 10px rgba(255,15,15,0.8))' }} />
+                    ASTRAL
+                </span>
             </Link>
 
             {/* Centre: timer (hidden on very small screens) */}

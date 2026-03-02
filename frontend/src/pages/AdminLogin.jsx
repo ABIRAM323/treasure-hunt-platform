@@ -31,7 +31,11 @@ export default function AdminLogin() {
             <div style={{ width: '100%', maxWidth: '420px' }}>
                 {/* Logo */}
                 <div className="text-center animate-slide-up" style={{ marginBottom: '2rem' }}>
-                    <div style={{ fontSize: 'clamp(2.5rem, 10vw, 4rem)', marginBottom: '0.75rem' }}>⚙️</div>
+                    <img
+                        src="/astral-logo.png"
+                        alt="ASTRAL Logo"
+                        style={{ width: '80px', height: '80px', objectFit: 'contain', marginBottom: '0.75rem', filter: 'drop-shadow(0 0 15px rgba(184, 77, 255, 0.5))' }}
+                    />
                     <h1 style={{ fontFamily: 'var(--font-display)', color: 'var(--neon-purple)', textShadow: '0 0 20px rgba(184,77,255,0.4)', fontSize: 'clamp(1.2rem, 5vw, 1.8rem)' }}>
                         ADMIN ACCESS
                     </h1>
