@@ -237,8 +237,8 @@ export default function AdminDashboard() {
                                                 </td>
                                                 <td>
                                                     <span className={`badge ${team.status === 'finished' ? 'badge-yellow' :
-                                                            team.status === 'final' ? 'badge-purple' :
-                                                                team.status === 'searching' ? 'badge-green' : 'badge-muted'
+                                                        team.status === 'final' ? 'badge-purple' :
+                                                            team.status === 'searching' ? 'badge-green' : 'badge-muted'
                                                         }`}>{team.status}</span>
                                                 </td>
                                                 <td style={{ fontSize: '0.85rem' }}>{team.lastLocation || '—'}</td>
@@ -347,9 +347,7 @@ export default function AdminDashboard() {
                                                 <td style={{ fontSize: '0.8rem' }}>{clue.locationName || '—'}</td>
                                                 <td>
                                                     <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                                                        {clue.type === 'physical' && (
-                                                            <button onClick={() => showQR(clue._id)} className="btn btn-cyan btn-sm">QR</button>
-                                                        )}
+                                                        <button onClick={() => showQR(clue._id)} className="btn btn-cyan btn-sm">QR</button>
                                                         <button onClick={() => setClueModal(clue)} className="btn btn-ghost btn-sm">Edit</button>
                                                         <button onClick={() => deleteClue(clue._id)} className="btn btn-danger btn-sm">✕</button>
                                                     </div>

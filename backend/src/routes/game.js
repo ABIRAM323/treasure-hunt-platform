@@ -170,10 +170,6 @@ router.post('/scan-qr', requireTeam, submissionLimiter, async (req, res) => {
         return res.status(400).json({ success: false, message: 'This QR is for a different clue. Check your current clue!' });
     }
 
-    if (currentClue.type !== 'physical') {
-        return res.status(400).json({ success: false, message: 'This clue does not require QR scanning.' });
-    }
-
     let attempt = await Attempt.findOne({ teamId: team._id, clueId: currentClue._id });
     if (!attempt) {
         attempt = await Attempt.create({ teamId: team._id, clueId: currentClue._id, attemptCount: 0 });

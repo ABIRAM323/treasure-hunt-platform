@@ -189,22 +189,30 @@ export default function TeamDashboard() {
                             </div>
                         )}
 
-                        {/* Action: QR Scan */}
-                        {clue.type === 'physical' && (
-                            <div>
+                        {/* Action: QR Scan (Now available for all clue types) */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            {clue.type === 'physical' ? (
                                 <p style={{ marginBottom: '1rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                                     Navigate to the location and scan the QR code to proceed.
                                 </p>
-                                <button className="btn btn-cyan" onClick={() => setShowQR((v) => !v)}>
-                                    {showQR ? 'Hide Scanner' : '📷 Scan QR Code'}
-                                </button>
-                                {showQR && (
-                                    <div style={{ marginTop: '1.25rem' }}>
-                                        <QRScanner onSuccess={handleQRSuccess} />
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                            ) : (
+                                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <div className="divider" style={{ flex: 1, margin: 0 }} />
+                                    <span style={{ padding: '0 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>OR</span>
+                                    <div className="divider" style={{ flex: 1, margin: 0 }} />
+                                </div>
+                            )}
+
+                            <button className="btn btn-ghost btn-sm w-full" onClick={() => setShowQR((v) => !v)} style={{ borderStyle: 'dashed' }}>
+                                {showQR ? '✕ Hide Scanner' : '📷 Scan QR Code Instead'}
+                            </button>
+
+                            {showQR && (
+                                <div style={{ marginTop: '1.25rem' }}>
+                                    <QRScanner onSuccess={handleQRSuccess} />
+                                </div>
+                            )}
+                        </div>
 
                         {/* Action: Text Answer */}
                         {(clue.type === 'technical' || clue.type === 'final') && (

@@ -152,17 +152,11 @@ router.post('/clues', requireAdmin, async (req, res) => {
 
     const clueData = { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint };
 
-    // For physical clues generate QR hash
-    if (type === 'physical') {
-        // clue._id isn't known yet; we create first then update qrHash
-    }
-
     const clue = await Clue.create(clueData);
 
-    if (type === 'physical') {
-        clue.qrHash = generateQRHash(clue._id.toString());
-        await clue.save();
-    }
+    // Generate QR hash for ALL clues (so admins can print a QR for any clue)
+    clue.qrHash = generateQRHash(clue._id.toString());
+    await clue.save();
 
     res.status(201).json({ success: true, clue });
 });
@@ -171,6 +165,13 @@ router.post('/clues', requireAdmin, async (req, res) => {
 router.put('/clues/:id', requireAdmin, async (req, res) => {
     const clue = await Clue.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).select('+answer +qrHash');
     if (!clue) return res.status(404).json({ success: false, message: 'Clue not found' });
+
+    // Ensure all clues eventually get a QR hash if updated without one
+    if (!clue.qrHash) {
+        clue.qrHash = generateQRHash(clue._id.toString());
+        await clue.save();
+    }
+
     res.json({ success: true, clue });
 });
 
@@ -180,11 +181,10 @@ router.delete('/clues/:id', requireAdmin, async (req, res) => {
     res.json({ success: true, message: 'Clue deleted' });
 });
 
-// GET generate QR code image for a physical clue
+// GET generate QR code image for ANY clue
 router.get('/clues/:id/qr', requireAdmin, async (req, res) => {
     const clue = await Clue.findById(req.params.id).select('+qrHash');
     if (!clue) return res.status(404).json({ success: false, message: 'Clue not found' });
-    if (clue.type !== 'physical') return res.status(400).json({ success: false, message: 'Only physical clues have QR codes' });
 
     const qrDataUrl = await generateQRCode(clue._id.toString());
     res.json({ success: true, qrDataUrl, clueId: clue._id, locationName: clue.locationName });

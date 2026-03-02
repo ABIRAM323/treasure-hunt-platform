@@ -268,14 +268,12 @@ const seedDatabase = async () => {
     const insertedClues = await Clue.insertMany(CLUES);
     console.log(`✅ Inserted ${insertedClues.length} clues`);
 
-    // Update QR hashes for physical clues
+    // Update QR hashes for ALL clues
     for (const clue of insertedClues) {
-        if (clue.type === 'physical') {
-            clue.qrHash = generateQRHash(clue._id.toString());
-            await clue.save();
-        }
+        clue.qrHash = generateQRHash(clue._id.toString());
+        await clue.save();
     }
-    console.log('✅ QR hashes generated for physical clues');
+    console.log('✅ QR hashes generated for all clues');
 
     // Categorize clues
     const physicalClues = insertedClues.filter((c) => c.type === 'physical');
