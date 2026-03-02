@@ -86,10 +86,11 @@ const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0
     const shiftPairs = pairsCount > 0 ? (Math.max(0, teamIndex) % pairsCount) : 0;
     const shiftIndex = shiftPairs * 2;
 
+    // Build the shifted array, taking only the first 8 clues (4 P, 4 T)
     const shiftedNormalClues = [
         ...interleaved.slice(shiftIndex),
         ...interleaved.slice(0, shiftIndex)
-    ];
+    ].slice(0, 8); // LIMIT to exactly 8 clues per the user pattern
 
     // Final boss clues come at the end, sorted deterministically
     const sortedFinal = finalClues.sort((a, b) => a.clueNumber - b.clueNumber);
