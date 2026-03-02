@@ -56,18 +56,34 @@ const calculateScore = (difficulty, attemptCount = 0, eventStartTime = null, eve
 const FINAL_BOSS_BONUS = 500;
 
 /**
- * Get clue distribution for a team (randomized order)
- * Physical + Technical interleaved, Final Boss at end
+ * Get clue distribution for a team using a shifted cyclic pattern.
+ * Each team starts at a different physical/technical clue to prevent bunching.
  * @param {Array} physicalClues - array of physical clue docs
  * @param {Array} technicalClues - array of technical clue docs
  * @param {Array} finalClues - array of final boss clue docs
+ * @param {number} teamIndex - used to calculate the starting clue shift
  * @returns {Array} ordered clue IDs
  */
-const buildClueOrder = (physicalClues, technicalClues, finalClues) => {
-    // Shuffle physical and technical clues
-    const shuffled = [...physicalClues, ...technicalClues].sort(() => Math.random() - 0.5);
-    // Final boss clues come at the end
-    return [...shuffled, ...finalClues].map((c) => c._id);
+const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0) => {
+    // Combine and sort by clueNumber to get a reliable base sequence
+    const normalClues = [...physicalClues, ...technicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
+
+    // Safety check just in case there are no normal clues
+    if (normalClues.length === 0) {
+        return finalClues.sort((a, b) => a.clueNumber - b.clueNumber).map((c) => c._id);
+    }
+
+    // Shift the pattern cyclically based on the team's index
+    const shift = Math.max(0, teamIndex) % normalClues.length;
+    const shiftedNormalClues = [
+        ...normalClues.slice(shift),
+        ...normalClues.slice(0, shift)
+    ];
+
+    // Final boss clues come at the end, sorted deterministically
+    const sortedFinal = finalClues.sort((a, b) => a.clueNumber - b.clueNumber);
+
+    return [...shiftedNormalClues, ...sortedFinal].map((c) => c._id);
 };
 
 /**

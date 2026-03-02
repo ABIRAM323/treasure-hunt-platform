@@ -35,11 +35,13 @@ router.post('/teams', requireAdmin, async (req, res) => {
     const existing = await Team.findOne({ teamId: teamId.toUpperCase() });
     if (existing) return res.status(409).json({ success: false, message: 'Team ID already exists' });
 
-    // Build randomized clue order
+    // Build deterministic shifted clue order
     const physicalClues = await Clue.find({ type: 'physical', isActive: true });
     const technicalClues = await Clue.find({ type: 'technical', isActive: true });
     const finalClues = await Clue.find({ type: 'final', isActive: true });
-    const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues);
+
+    const existingTeamsCount = await Team.countDocuments();
+    const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues, existingTeamsCount);
 
     const team = await Team.create({
         teamId: teamId.toUpperCase(),
@@ -76,11 +78,15 @@ router.post('/teams/:id/reset', requireAdmin, async (req, res) => {
     const team = await Team.findById(req.params.id);
     if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
 
-    // Reassign randomized clue order
+    // Determine team index to keep their specific linear track
+    const allTeams = await Team.find().sort({ _id: 1 }).select('_id');
+    const teamIndex = allTeams.findIndex(t => t._id.equals(team._id));
+
+    // Reassign shifted clue order
     const physicalClues = await Clue.find({ type: 'physical', isActive: true });
     const technicalClues = await Clue.find({ type: 'technical', isActive: true });
     const finalClues = await Clue.find({ type: 'final', isActive: true });
-    const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues);
+    const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues, Math.max(0, teamIndex));
 
     team.score = 0;
     team.currentClueIndex = 0;
@@ -253,9 +259,11 @@ router.post('/event/reset', requireAdmin, async (req, res) => {
     const technicalClues = await Clue.find({ type: 'technical', isActive: true });
     const finalClues = await Clue.find({ type: 'final', isActive: true });
 
-    const teams = await Team.find();
+    const teams = await Team.find().sort({ _id: 1 });
+    let teamIndex = 0;
+
     for (const team of teams) {
-        const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues);
+        const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues, teamIndex++);
         team.score = 0;
         team.currentClueIndex = 0;
         team.clueOrder = clueOrder;
