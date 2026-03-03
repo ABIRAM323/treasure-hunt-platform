@@ -292,6 +292,48 @@ h1 {
   }
 }
 
+/* Phantom Entity Hallucinations */
+.phantom-entity {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 2s ease;
+  filter: grayscale(100%) brightness(0.6) sepia(1) hue-rotate(-50deg) blur(2px);
+  mask-image: radial-gradient(circle at center, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 100%);
+}
+
+.phantom-visible {
+  opacity: 0.15;
+  animation: entity-glitch 5s infinite;
+}
+
+@keyframes entity-glitch {
+
+  0%,
+  90%,
+  100% {
+    transform: translate(0, 0) scale(1.1);
+    filter: blur(2px);
+  }
+
+  92% {
+    transform: translate(-10px, 5px) skewX(5deg);
+    filter: blur(0) contrast(2);
+  }
+
+  94% {
+    transform: translate(15px, -10px);
+    filter: blur(4px) hue-rotate(90deg);
+  }
+
+  96% {
+    transform: translate(-5px, 0) scale(1.15);
+    filter: blur(1px);
+  }
+}
+
 h2 {
   font-size: clamp(1.3rem, 3vw, 2rem);
 }

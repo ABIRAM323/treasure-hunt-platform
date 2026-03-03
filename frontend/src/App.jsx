@@ -53,15 +53,18 @@ function AppRoutes() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <SocketProvider>
-        <BrowserRouter>
-          <div className="crt-overlay"></div>
-          <div className="flicker-overlay"></div>
-          <div className="veins-overlay"></div>
-          <AppRoutes />
-        </BrowserRouter>
-      </SocketProvider>
-    </AuthProvider>
+    <div className="app-container">
+      <AuthProvider>
+        <SocketProvider>
+          <BrowserRouter>
+            <div className="crt-overlay"></div>
+            <div className="flicker-overlay"></div>
+            <div className="veins-overlay"></div>
+            <EntityHallucinations />
+            <AppRoutes />
+          </BrowserRouter>
+        </SocketProvider>
+      </AuthProvider>
+    </div>
   );
 }
