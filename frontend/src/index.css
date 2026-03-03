@@ -72,22 +72,61 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  /* Dark Red Vignette + Deep Black */
+  /* Red Storm Pulse Background */
+  background:
+    radial-gradient(circle at 50% 50%, rgba(200, 0, 0, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 80%, #000 100%),
+    #050101;
+  background-size: 200% 200%;
+  animation: bg-pulse 15s ease infinite alternate;
+}
+
+@keyframes bg-pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Upside Down Ash Particles */
+body::after {
+  content: "";
+  position: fixed;
+  top: -100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-image:
-    radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.4) 70%, #000 100%),
-    radial-gradient(circle at 50% 50%, rgba(255, 0, 0, 0.05) 0%, transparent 80%);
+    radial-gradient(circle, #fff 1px, transparent 1px),
+    radial-gradient(circle, #ddd 1.2px, transparent 1.2px),
+    radial-gradient(circle, #aaa 0.8px, transparent 0.8px);
+  background-size: 400px 400px, 350px 350px, 500px 500px;
+  background-position: 0 0, 100px 150px, 250px 50px;
+  animation: ash-float 20s linear infinite;
+  opacity: 0.15;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+@keyframes ash-float {
+  from {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  to {
+    transform: translateY(100vh) rotate(5deg);
+  }
 }
 
 /* CRT Scanline Overlay */
-body::before {
-  content: " ";
-  display: block;
+.crt-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+  inset: 0;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
     linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
   z-index: 9999;
   background-size: 100% 3px, 3px 100%;
@@ -95,105 +134,28 @@ body::before {
   opacity: 0.4;
 }
 
-/* Flicker Animation for the Scanlines */
-body::after {
-  content: " ";
-  display: block;
+/* Screen Flicker Overlay */
+.flicker-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: rgba(18, 16, 16, 0.1);
+  inset: 0;
+  background: rgba(18, 16, 16, 0.05);
   opacity: 0;
   z-index: 9998;
   pointer-events: none;
-  animation: flicker 0.15s infinite;
+  animation: screen-flicker 0.15s infinite;
 }
 
-@keyframes flicker {
+@keyframes screen-flicker {
   0% {
-    opacity: 0.27861;
-  }
-
-  5% {
-    opacity: 0.34769;
-  }
-
-  10% {
-    opacity: 0.23604;
-  }
-
-  15% {
-    opacity: 0.90626;
-  }
-
-  20% {
-    opacity: 0.18128;
-  }
-
-  25% {
-    opacity: 0.83891;
-  }
-
-  30% {
-    opacity: 0.65583;
-  }
-
-  35% {
-    opacity: 0.57807;
-  }
-
-  40% {
-    opacity: 0.26559;
-  }
-
-  45% {
-    opacity: 0.84693;
+    opacity: 0.124;
   }
 
   50% {
-    opacity: 0.96019;
-  }
-
-  55% {
-    opacity: 0.08523;
-  }
-
-  60% {
-    opacity: 0.71313;
-  }
-
-  65% {
-    opacity: 0.09051;
-  }
-
-  70% {
-    opacity: 0.33103;
-  }
-
-  75% {
-    opacity: 0.74857;
-  }
-
-  80% {
-    opacity: 0.108;
-  }
-
-  85% {
-    opacity: 0.57605;
-  }
-
-  90% {
-    opacity: 0.93926;
-  }
-
-  95% {
-    opacity: 0.07629;
+    opacity: 0.186;
   }
 
   100% {
-    opacity: 0.47353;
+    opacity: 0.124;
   }
 }
 
@@ -224,24 +186,42 @@ h1 {
 
 .stranger-title {
   font-family: var(--font-display);
-  color: #000;
-  -webkit-text-stroke: 1.5px #ff0000;
+  color: transparent;
+  -webkit-text-stroke: 1px #ff0000;
+  background: linear-gradient(to bottom, #ff0000, #b30000);
+  -webkit-background-clip: text;
+  background-clip: text;
   text-shadow:
-    0 0 10px #ff0000,
-    0 0 20px #ff0000,
-    0 0 40px #aa0000;
-  animation: neon-pulse 2s infinite alternate;
+    0 0 10px rgba(255, 0, 0, 0.8),
+    0 0 30px rgba(255, 0, 0, 0.4),
+    0 0 60px rgba(130, 0, 0, 0.3);
+  letter-spacing: 0.05em;
+  animation: stranger-reveal 3s ease forwards, neon-glow 2s infinite alternate;
 }
 
-@keyframes neon-pulse {
+@keyframes stranger-reveal {
   from {
-    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 40px #aa0000;
-    -webkit-text-stroke: 1.5px #ff0000;
+    opacity: 0;
+    filter: blur(10px) brightness(3);
+    letter-spacing: 0.5em;
   }
 
   to {
-    text-shadow: 0 0 15px #ff0000, 0 0 30px #ff0000, 0 0 60px #ff0000, 0 0 80px #ff0000;
-    -webkit-text-stroke: 2px #ff0000;
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    letter-spacing: 0.05em;
+  }
+}
+
+@keyframes neon-glow {
+  from {
+    text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 0 0 20px rgba(255, 0, 0, 0.4);
+    -webkit-text-stroke: 1px #ff0000;
+  }
+
+  to {
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.6), 0 0 80px rgba(255, 0, 0, 0.4);
+    -webkit-text-stroke: 1.2px #ff0000;
   }
 }
 

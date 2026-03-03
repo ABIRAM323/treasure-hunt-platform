@@ -56,6 +56,8 @@ export default function App() {
     <AuthProvider>
       <SocketProvider>
         <BrowserRouter>
+          <div className="crt-overlay"></div>
+          <div className="flicker-overlay"></div>
           <AppRoutes />
         </BrowserRouter>
       </SocketProvider>
