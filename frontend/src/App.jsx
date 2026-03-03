@@ -58,6 +58,7 @@ export default function App() {
         <BrowserRouter>
           <div className="crt-overlay"></div>
           <div className="flicker-overlay"></div>
+          <div className="veins-overlay"></div>
           <AppRoutes />
         </BrowserRouter>
       </SocketProvider>
