@@ -35,10 +35,16 @@ export default function TeamLogin() {
                         alt="ASTRAL Logo"
                         style={{ width: '120px', height: '120px', objectFit: 'contain', marginBottom: '1rem', filter: 'drop-shadow(0 0 15px rgba(255, 0, 0, 0.6)) hue-rotate(340deg)' }}
                     />
-                    <h1 className="stranger-title" style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '0.25rem' }}>
-                        ASTRAL
-                    </h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--neon-green)', letterSpacing: '0.3em', textTransform: 'uppercase', opacity: 0.8 }}>
+                    <div className="stranger-logo-wrap" style={{ transform: 'scale(1.2)', transformOrigin: 'center' }}>
+                        <div className="logo-bar logo-bar-top"></div>
+                        <div className="stranger-logo" style={{ fontSize: '2.5rem' }}>
+                            <span className="side-letter">A</span>
+                            <span className="center-text">STRA</span>
+                            <span className="side-letter">L</span>
+                        </div>
+                        <div className="logo-bar logo-bar-bottom"></div>
+                    </div>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--neon-green)', letterSpacing: '0.3em', textTransform: 'uppercase', opacity: 0.8, marginTop: '1rem' }}>
                         TREASURE HUNT
                     </p>
                 </div>

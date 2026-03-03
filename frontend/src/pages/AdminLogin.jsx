@@ -36,10 +36,16 @@ export default function AdminLogin() {
                         alt="ASTRAL Logo"
                         style={{ width: '100px', height: '100px', objectFit: 'contain', marginBottom: '1rem', filter: 'drop-shadow(0 0 15px rgba(255, 0, 0, 0.6)) hue-rotate(340deg)' }}
                     />
-                    <h1 className="stranger-title" style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', marginBottom: '0.25rem' }}>
-                        ADMIN ACCESS
-                    </h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--neon-green)', letterSpacing: '0.15em', marginTop: '0.25rem', opacity: 0.8 }}>
+                    <div className="stranger-logo-wrap" style={{ transform: 'scale(1)', transformOrigin: 'center' }}>
+                        <div className="logo-bar logo-bar-top"></div>
+                        <div className="stranger-logo" style={{ fontSize: '2rem' }}>
+                            <span className="side-letter">A</span>
+                            <span className="center-text">STRA</span>
+                            <span className="side-letter">L</span>
+                        </div>
+                        <div className="logo-bar logo-bar-bottom"></div>
+                    </div>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--neon-green)', letterSpacing: '0.15em', marginTop: '1.2rem', opacity: 0.8 }}>
                         RESTRICTED — ORGANIZERS ONLY
                     </p>
                 </div>

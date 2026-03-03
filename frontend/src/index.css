@@ -229,8 +229,20 @@ h1 {
   letter-spacing: -0.02em;
 }
 
-.stranger-title {
+/* --- Stranger Logo System --- */
+.stranger-logo-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  padding: 1rem 0;
+  user-select: none;
+}
+
+.stranger-logo {
   font-family: var(--font-display);
+  display: flex;
+  align-items: flex-start;
   color: transparent;
   -webkit-text-stroke: 1.5px #ff0000;
   background: linear-gradient(to bottom, #ff0000 0%, #800000 100%);
@@ -238,10 +250,63 @@ h1 {
   background-clip: text;
   text-shadow:
     0 0 10px rgba(255, 0, 0, 0.8),
-    0 0 40px rgba(255, 0, 0, 0.5),
-    0 0 100px rgba(255, 0, 0, 0.3);
-  letter-spacing: 0.05em;
-  animation: stranger-glitch-reveal 4s cubic-bezier(0.19, 1, 0.22, 1) forwards, neon-glow 2.5s infinite alternate;
+    0 0 40px rgba(255, 0, 0, 0.4);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  animation: stranger-glitch-reveal 4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.stranger-logo .side-letter {
+  font-size: 1.4em;
+  margin-top: -0.1em;
+  font-weight: 900;
+}
+
+.stranger-logo .center-text {
+  font-size: 1em;
+  margin: 0 -0.1em;
+  align-self: flex-start;
+  margin-top: 0.15em;
+}
+
+/* Horizontal Bars */
+.logo-bar {
+  height: 3px;
+  background: #ff0000;
+  box-shadow: 0 0 15px #ff0000, 0 0 5px #ff0000;
+  position: absolute;
+  left: 0.5em;
+  right: 0.5em;
+  z-index: 10;
+}
+
+.logo-bar-top {
+  top: 1.15rem;
+  left: 0.8em;
+  right: 0.8em;
+  height: 2.5px;
+}
+
+.logo-bar-bottom {
+  bottom: 0.9rem;
+  left: 0.1em;
+  right: 0.1em;
+  height: 2.5px;
+}
+
+/* Navbar specific logo sizing */
+.navbar .stranger-logo-wrap {
+  padding: 0.2rem 0;
+  transform: scale(0.6);
+  transform-origin: left center;
+}
+
+.navbar .logo-bar-top {
+  top: 0.35rem;
+}
+
+.navbar .logo-bar-bottom {
+  bottom: 0.2rem;
 }
 
 @keyframes stranger-glitch-reveal {
@@ -249,35 +314,31 @@ h1 {
     opacity: 0;
     filter: blur(20px) contrast(2);
     transform: scale(1.1);
-    letter-spacing: 0.8em;
   }
 
   10% {
     opacity: 0.3;
-    filter: blur(15px) hue-rotate(90deg);
+    filter: blur(15px);
   }
 
   12% {
     opacity: 0.1;
-    filter: blur(5px);
   }
 
   15% {
     opacity: 0.6;
-    filter: blur(10px) hue-rotate(-90deg);
+    filter: blur(10px);
   }
 
   25% {
     opacity: 0.4;
     transform: scale(1.05);
-    letter-spacing: 0.4em;
   }
 
   35% {
     opacity: 1;
     filter: blur(0);
     transform: scale(1);
-    letter-spacing: 0.05em;
   }
 }
 
