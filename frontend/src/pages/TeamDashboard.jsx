@@ -166,7 +166,7 @@ export default function TeamDashboard() {
                             )}
                             {clue.mediaType === 'audio' && clue.mediaUrl && (
                                 <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                                    <audio controls style={{ width: '100%', maxWidth: '400px' }} src={clue.mediaUrl}>
+                                    <audio autoPlay controls style={{ width: '100%', maxWidth: '400px' }} src={clue.mediaUrl}>
                                         Your browser does not support the audio element.
                                     </audio>
                                 </div>
