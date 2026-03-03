@@ -179,6 +179,17 @@ export default function TeamDashboard() {
                                     </audio>
                                 </div>
                             )}
+                            {clue.mediaType === 'video' && clue.mediaUrl && (
+                                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                                    <video
+                                        controls
+                                        style={{ width: '100%', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}
+                                        src={clue.mediaUrl.startsWith('/uploads') ? (import.meta.env.VITE_API_URL || '') + clue.mediaUrl : clue.mediaUrl}
+                                    >
+                                        Your browser does not support the video element.
+                                    </video>
+                                </div>
+                            )}
                         </div>
 
                         {/* Location (physical) */}

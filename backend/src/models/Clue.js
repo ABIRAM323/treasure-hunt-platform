@@ -40,7 +40,7 @@ const clueSchema = new mongoose.Schema(
         },
         mediaType: {
             type: String,
-            enum: ['image', 'audio', 'none'],
+            enum: ['image', 'audio', 'video', 'none'],
             default: 'none',
         },
         mediaUrl: {

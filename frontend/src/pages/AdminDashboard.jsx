@@ -654,13 +654,14 @@ function ClueFormModal({ clue, onClose, onSave }) {
                                 <option value="none">None</option>
                                 <option value="image">Image</option>
                                 <option value="audio">Audio</option>
+                                <option value="video">Video</option>
                             </select>
                         </div>
                         {form.mediaType !== 'none' && (
                             <div className="form-group">
                                 <label className="form-label" style={{ marginBottom: '0.25rem' }}>Media File / URL</label>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                    <input type="file" onChange={handleMediaUpload} accept={form.mediaType === 'image' ? 'image/*' : 'audio/*'} className="form-input" style={{ padding: '0.2rem' }} />
+                                    <input type="file" onChange={handleMediaUpload} accept={form.mediaType === 'image' ? 'image/*' : form.mediaType === 'audio' ? 'audio/*' : 'video/*'} className="form-input" style={{ padding: '0.2rem' }} />
                                     <input className="form-input" value={form.mediaUrl} onChange={set('mediaUrl')} placeholder="https://... or uploaded file URL" />
                                 </div>
                             </div>
