@@ -6,30 +6,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Creepster&family=EB+Garamond:wght@400;700&family=Space+Mono&display=swap');
 
 :root {
-  /* Stranger Things Theme: Aggressive Upside Down Aesthetic */
-  --bg-primary: #050608;
-  /* Deep Void Blue-Grey */
-  --bg-secondary: #080a0c;
-  --bg-card: rgba(10, 12, 15, 0.95);
-  --bg-card-hover: rgba(15, 18, 22, 0.98);
-  --bg-glass: rgba(255, 0, 0, 0.04);
+  /* Stranger Things Final Theme: Organic fleshy Red */
+  --bg-primary: #0a0101;
+  /* Deepest Blood Black */
+  --bg-secondary: #1a0202;
+  --bg-card: rgba(15, 2, 2, 0.98);
+  --bg-card-hover: rgba(25, 3, 3, 1);
+  --bg-glass: rgba(255, 0, 0, 0.08);
 
   --neon-green: #ff0000;
-  /* Bloody Red */
-  --neon-cyan: #1a2a4b;
-  /* Cold Void Blue */
-  --neon-purple: #2a0a2a;
-  --neon-pink: #cc0000;
-  --neon-yellow: #ffae00;
-  --neon-orange: #ff4500;
+  /* Primary Blood Red */
+  --neon-cyan: #440000;
+  --neon-purple: #330000;
+  --neon-pink: #ff1111;
+  --neon-yellow: #ff4400;
+  --neon-orange: #aa0000;
 
-  --text-primary: #d1d5db;
-  --text-secondary: #9ca3af;
-  --text-muted: #4b5563;
+  --text-primary: #f2e2e2;
+  --text-secondary: #b38888;
+  --text-muted: #664444;
   --text-neon: #ff0000;
 
-  --border-glow: rgba(255, 0, 0, 0.5);
-  --border-subtle: rgba(255, 0, 0, 0.2);
+  --border-glow: rgba(255, 0, 0, 0.6);
+  --border-subtle: rgba(255, 0, 0, 0.3);
 
   --font-display: 'Creepster', cursive;
   --font-body: 'EB Garamond', serif;
@@ -73,13 +72,13 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  /* Red Storm Pulse Background */
+  /* Organic Fleshy Red Background Layering */
   background:
-    radial-gradient(circle at 50% 50%, rgba(200, 0, 0, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.6) 80%, #000 100%),
-    #050101;
-  background-size: 200% 200%;
-  animation: bg-pulse 15s ease infinite alternate;
+    radial-gradient(ellipse at 50% 100%, #660000 0%, transparent 70%),
+    radial-gradient(circle at 20% 30%, #440000 0%, transparent 50%),
+    radial-gradient(circle at 80% 40%, #550000 0%, transparent 60%),
+    linear-gradient(to bottom, #000 0%, #1a0202 50%, #440000 100%);
+  background-attachment: fixed;
 }
 
 @keyframes bg-pulse {
@@ -142,11 +141,11 @@ body::after {
   content: "";
   position: absolute;
   inset: -10%;
-  background-image: repeating-linear-gradient(45deg, transparent 0, transparent 48px, rgba(20, 0, 0, 0.3) 50px, transparent 52px);
-  mask-image: radial-gradient(circle at center, transparent 30%, black 100%);
-  -webkit-mask-image: radial-gradient(circle at center, transparent 30%, black 100%);
-  opacity: 0.6;
-  filter: blur(2px) contrast(200%);
+  background-image: repeating-linear-gradient(45deg, transparent 0, transparent 48px, rgba(40, 0, 0, 0.4) 50px, transparent 52px);
+  mask-image: radial-gradient(circle at center, transparent 20%, black 100%);
+  -webkit-mask-image: radial-gradient(circle at center, transparent 20%, black 100%);
+  opacity: 0.8;
+  filter: blur(4px) contrast(300%) drop-shadow(0 0 10px #ff0000);
   animation: veins-creep 60s linear infinite;
 }
 

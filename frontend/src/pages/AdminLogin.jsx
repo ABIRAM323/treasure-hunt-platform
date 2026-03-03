@@ -33,13 +33,13 @@ export default function AdminLogin() {
                 <div className="text-center animate-slide-up" style={{ marginBottom: '2.5rem' }}>
                     <img
                         src="/astral-logo.png"
-                        alt="ASTRAL Logo"
-                        style={{ width: '100px', height: '100px', objectFit: 'contain', marginBottom: '1rem', filter: 'drop-shadow(0 0 15px rgba(255, 0, 0, 0.6)) hue-rotate(340deg)' }}
+                        alt="Logo"
+                        style={{ width: '100px', height: '100px', objectFit: 'contain', marginBottom: '1.5rem', filter: 'drop-shadow(0 0 15px rgba(255, 0, 0, 0.7)) hue-rotate(340deg)' }}
                     />
-                    <h1 className="stranger-title" style={{ fontSize: 'clamp(1.8rem, 6vw, 2.5rem)', marginBottom: '0.25rem' }}>
+                    <h1 className="stranger-title" style={{ fontSize: 'clamp(1.5rem, 5vw, 2rem)', marginBottom: '0.25rem' }}>
                         ADMIN ACCESS
                     </h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--neon-green)', letterSpacing: '0.15em', marginTop: '0.25rem', opacity: 0.8 }}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--neon-green)', letterSpacing: '0.2em', marginTop: '0.5rem', opacity: 0.8 }}>
                         RESTRICTED — ORGANIZERS ONLY
                     </p>
                 </div>

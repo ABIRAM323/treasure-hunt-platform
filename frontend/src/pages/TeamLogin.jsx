@@ -32,13 +32,10 @@ export default function TeamLogin() {
                 <div className="text-center animate-slide-up" style={{ marginBottom: '2.5rem' }}>
                     <img
                         src="/astral-logo.png"
-                        alt="ASTRAL Logo"
-                        style={{ width: '120px', height: '120px', objectFit: 'contain', marginBottom: '1rem', filter: 'drop-shadow(0 0 15px rgba(255, 0, 0, 0.6)) hue-rotate(340deg)' }}
+                        alt="Logo"
+                        style={{ width: '120px', height: '120px', objectFit: 'contain', marginBottom: '1.5rem', filter: 'drop-shadow(0 0 20px rgba(255, 0, 0, 0.8)) hue-rotate(340deg)' }}
                     />
-                    <h1 className="stranger-title" style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '0.25rem' }}>
-                        ASTRAL
-                    </h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--neon-green)', letterSpacing: '0.3em', textTransform: 'uppercase', opacity: 0.8 }}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--neon-green)', letterSpacing: '0.4em', textTransform: 'uppercase', opacity: 0.9 }}>
                         TREASURE HUNT
                     </p>
                 </div>

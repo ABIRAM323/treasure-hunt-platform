@@ -18,9 +18,8 @@ export default function Navbar({ title }) {
         <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 100 }}>
             {/* Left: brand */}
             <Link to={isAdmin ? '/admin' : '/dashboard'} style={{ textDecoration: 'none' }}>
-                <span className="navbar-brand stranger-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem' }}>
-                    <img src="/astral-logo.png" alt="logo" style={{ height: '28px', width: 'auto', filter: 'drop-shadow(0 0 10px rgba(255,0,0,0.8)) hue-rotate(340deg)' }} />
-                    ASTRAL
+                <span className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <img src="/astral-logo.png" alt="logo" style={{ height: '32px', width: 'auto', filter: 'drop-shadow(0 0 10px rgba(255,0,0,0.9)) hue-rotate(340deg)' }} />
                 </span>
             </Link>
 
