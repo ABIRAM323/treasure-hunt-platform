@@ -28,7 +28,10 @@ const storage = multer.diskStorage({
         cb(null, uniqueSuffix + path.extname(file.originalname));
     }
 });
-const upload = multer({ storage });
+const upload = multer({
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 } // 10 MB in bytes
+});
 
 // ============== TEAM MANAGEMENT ==============
 
