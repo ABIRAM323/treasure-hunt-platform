@@ -38,6 +38,15 @@ const clueSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        mediaType: {
+            type: String,
+            enum: ['image', 'audio', 'none'],
+            default: 'none',
+        },
+        mediaUrl: {
+            type: String,
+            default: '',
+        },
         locationName: {
             type: String,
             default: '',

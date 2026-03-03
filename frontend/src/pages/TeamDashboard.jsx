@@ -159,6 +159,18 @@ export default function TeamDashboard() {
                             fontFamily: 'var(--font-body)', lineHeight: '1.8', color: 'var(--text-primary)', fontSize: '1.05rem',
                         }}>
                             {clue.clueText}
+                            {clue.mediaType === 'image' && clue.mediaUrl && (
+                                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                                    <img src={clue.mediaUrl} alt="Clue Media" style={{ maxWidth: '100%', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }} />
+                                </div>
+                            )}
+                            {clue.mediaType === 'audio' && clue.mediaUrl && (
+                                <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                                    <audio controls style={{ width: '100%', maxWidth: '400px' }} src={clue.mediaUrl}>
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                            )}
                         </div>
 
                         {/* Location (physical) */}

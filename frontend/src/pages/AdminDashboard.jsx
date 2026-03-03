@@ -558,6 +558,8 @@ function ClueFormModal({ clue, onClose, onSave }) {
         points: clue.points || 200,
         hint: clue.hint || '',
         hasQR: clue.hasQR !== undefined ? clue.hasQR : true,
+        mediaType: clue.mediaType || 'none',
+        mediaUrl: clue.mediaUrl || '',
     });
     const [saving, setSaving] = useState(false);
     const [err, setErr] = useState('');
@@ -622,6 +624,23 @@ function ClueFormModal({ clue, onClose, onSave }) {
                     <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <input type="checkbox" checked={form.hasQR} onChange={(e) => setForm(f => ({ ...f, hasQR: e.target.checked }))} id="hasQRCheck" style={{ width: 'auto', marginRight: '0.5rem' }} />
                         <label className="form-label" htmlFor="hasQRCheck" style={{ marginBottom: 0, textTransform: 'none', letterSpacing: 'normal' }}>Enable QR code scanning for this clue</label>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label className="form-label">Media Type</label>
+                            <select className="form-input" value={form.mediaType} onChange={set('mediaType')}>
+                                <option value="none">None</option>
+                                <option value="image">Image</option>
+                                <option value="audio">Audio</option>
+                            </select>
+                        </div>
+                        {form.mediaType !== 'none' && (
+                            <div className="form-group">
+                                <label className="form-label">Media URL</label>
+                                <input className="form-input" value={form.mediaUrl} onChange={set('mediaUrl')} placeholder="https://..." />
+                            </div>
+                        )}
                     </div>
 
                     <div className="form-group">
