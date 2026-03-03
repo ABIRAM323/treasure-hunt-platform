@@ -87,7 +87,7 @@ export default function TeamDashboard() {
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem' }}>
                     <div>
-                        <h1 style={{ fontSize: '1.5rem' }}>
+                        <h1 className="stranger-title" style={{ fontSize: '1.8rem', letterSpacing: '0.05em' }}>
                             Welcome, <span className="text-neon">{user?.name}</span>
                         </h1>
                         <p style={{ marginTop: '0.25rem', fontFamily: 'var(--font-mono)', fontSize: '0.8rem' }}>

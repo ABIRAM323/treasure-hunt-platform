@@ -29,17 +29,16 @@ export default function TeamLogin() {
     return (
         <div className="page-center" style={{ background: 'var(--bg-primary)', minHeight: '100vh', padding: '1.5rem 1rem' }}>
             <div style={{ width: '100%', maxWidth: '420px' }}>
-                {/* Logo */}
-                <div className="text-center animate-slide-up" style={{ marginBottom: '2rem' }}>
+                <div className="text-center animate-slide-up" style={{ marginBottom: '2.5rem' }}>
                     <img
                         src="/astral-logo.png"
                         alt="ASTRAL Logo"
-                        style={{ width: '100px', height: '100px', objectFit: 'contain', marginBottom: '0.75rem', filter: 'drop-shadow(0 0 15px rgba(255, 15, 15, 0.5))' }}
+                        style={{ width: '120px', height: '120px', objectFit: 'contain', marginBottom: '1rem', filter: 'drop-shadow(0 0 15px rgba(255, 0, 0, 0.6)) hue-rotate(340deg)' }}
                     />
-                    <h1 style={{ fontFamily: 'var(--font-display)', color: 'var(--neon-green)', textShadow: '0 0 20px rgba(255,15,15,0.4)', fontSize: 'clamp(1.2rem, 5vw, 1.8rem)' }}>
+                    <h1 className="stranger-title" style={{ fontSize: 'clamp(2rem, 8vw, 3.5rem)', marginBottom: '0.25rem' }}>
                         ASTRAL
                     </h1>
-                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-muted)', letterSpacing: '0.2em', marginTop: '0.25rem' }}>
+                    <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: 'var(--neon-green)', letterSpacing: '0.3em', textTransform: 'uppercase', opacity: 0.8 }}>
                         TREASURE HUNT
                     </p>
                 </div>
