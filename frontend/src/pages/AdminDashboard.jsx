@@ -591,9 +591,9 @@ function ClueFormModal({ clue, onClose, onSave }) {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             if (data.success) {
-                // Ensure media URL is absolute by prepending API URL if in development, else relative is fine if frontend and backend on same domain
-                const baseUrl = import.meta.env.VITE_API_URL || '';
-                setForm(f => ({ ...f, mediaUrl: baseUrl + data.mediaUrl }));
+                // Save only the relative path returned by the server (e.g., /uploads/file.mp3)
+                // This ensures the URL is portable regardless of host/port.
+                setForm(f => ({ ...f, mediaUrl: data.mediaUrl }));
             }
         } catch (ex) {
             setErr(ex.response?.data?.message || 'Error uploading media file');
