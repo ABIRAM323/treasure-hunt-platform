@@ -17,17 +17,11 @@ export default function Navbar({ title }) {
     return (
         <nav className="navbar" style={{ position: 'sticky', top: 0, zIndex: 100 }}>
             {/* Left: brand */}
-            <Link to={isAdmin ? '/admin' : '/dashboard'} className="navbar-brand d-flex align-items-center" style={{ gap: '0.5rem', textDecoration: 'none' }}>
-                <img src="/astral-logo.png" alt="Logo" style={{ width: '40px', height: '40px', filter: 'drop-shadow(0 0 10px rgba(255,0,0,0.5)) hue-rotate(340deg)' }} />
-                <div className="stranger-logo-wrap">
-                    <div className="logo-bar logo-bar-top"></div>
-                    <div className="stranger-logo">
-                        <span className="side-letter">A</span>
-                        <span className="center-text">STRA</span>
-                        <span className="side-letter">L</span>
-                    </div>
-                    <div className="logo-bar logo-bar-bottom"></div>
-                </div>
+            <Link to={isAdmin ? '/admin' : '/dashboard'} style={{ textDecoration: 'none' }}>
+                <span className="navbar-brand stranger-title" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1.2rem' }}>
+                    <img src="/astral-logo.png" alt="logo" style={{ height: '28px', width: 'auto', filter: 'drop-shadow(0 0 10px rgba(255,0,0,0.8)) hue-rotate(340deg)' }} />
+                    ASTRAL
+                </span>
             </Link>
 
             {/* Centre: timer (hidden on very small screens) */}
