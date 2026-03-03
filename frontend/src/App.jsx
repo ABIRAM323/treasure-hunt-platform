@@ -9,6 +9,7 @@ import TeamDashboard from './pages/TeamDashboard';
 import LeaderboardPage from './pages/LeaderboardPage';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
+import EntityHallucinations from './components/EntityHallucinations';
 
 function ProtectedTeamRoute({ children }) {
   const { isTeam } = useAuth();
