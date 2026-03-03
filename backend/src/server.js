@@ -43,6 +43,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Serve uploaded media files
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
 // ─── Serve built React frontend ──────────────────────────────────────────────
 const fs = require('fs');
 const possibleDistPaths = [

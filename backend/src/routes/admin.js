@@ -7,8 +7,22 @@ const Event = require('../models/Event');
 const { requireAdmin } = require('../middleware/auth');
 const { buildClueOrder } = require('../utils/scoring');
 const { generateQRCode, generateQRHash } = require('../utils/qrHelper');
+const multer = require('multer');
+const path = require('path');
 
 const router = express.Router();
+
+// Configure multer
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, uniqueSuffix + path.extname(file.originalname));
+    }
+});
+const upload = multer({ storage });
 
 // ============== TEAM MANAGEMENT ==============
 
@@ -194,6 +208,15 @@ router.get('/clues/:id/qr', requireAdmin, async (req, res) => {
 
     const qrDataUrl = await generateQRCode(clue._id.toString());
     res.json({ success: true, qrDataUrl, clueId: clue._id, locationName: clue.locationName });
+});
+
+// POST upload media
+router.post('/upload-media', requireAdmin, upload.single('media'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+    const mediaUrl = `/uploads/${req.file.filename}`;
+    res.json({ success: true, mediaUrl });
 });
 
 // ============== EVENT MANAGEMENT ==============

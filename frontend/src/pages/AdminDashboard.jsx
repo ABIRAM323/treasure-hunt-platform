@@ -579,6 +579,27 @@ function ClueFormModal({ clue, onClose, onSave }) {
         }
     };
 
+    const handleMediaUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('media', file);
+
+        try {
+            const { data } = await api.post('/admin/upload-media', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+            });
+            if (data.success) {
+                // Ensure media URL is absolute by prepending API URL if in development, else relative is fine if frontend and backend on same domain
+                const baseUrl = import.meta.env.VITE_API_URL || '';
+                setForm(f => ({ ...f, mediaUrl: baseUrl + data.mediaUrl }));
+            }
+        } catch (ex) {
+            setErr(ex.response?.data?.message || 'Error uploading media file');
+        }
+    };
+
     return (
         <div className="overlay">
             <div className="modal" style={{ maxWidth: '640px', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -637,8 +658,11 @@ function ClueFormModal({ clue, onClose, onSave }) {
                         </div>
                         {form.mediaType !== 'none' && (
                             <div className="form-group">
-                                <label className="form-label">Media URL</label>
-                                <input className="form-input" value={form.mediaUrl} onChange={set('mediaUrl')} placeholder="https://..." />
+                                <label className="form-label" style={{ marginBottom: '0.25rem' }}>Media File / URL</label>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                    <input type="file" onChange={handleMediaUpload} accept={form.mediaType === 'image' ? 'image/*' : 'audio/*'} className="form-input" style={{ padding: '0.2rem' }} />
+                                    <input className="form-input" value={form.mediaUrl} onChange={set('mediaUrl')} placeholder="https://... or uploaded file URL" />
+                                </div>
                             </div>
                         )}
                     </div>
