@@ -72,56 +72,28 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  /* Organic Fleshy Red Background Layering */
+  /* The Rift: Vertical Split Background */
   background:
-    radial-gradient(ellipse at 50% 100%, #660000 0%, transparent 70%),
-    radial-gradient(circle at 20% 30%, #440000 0%, transparent 50%),
-    radial-gradient(circle at 80% 40%, #550000 0%, transparent 60%),
-    linear-gradient(to bottom, #000 0%, #1a0202 50%, #440000 100%);
+    linear-gradient(to right,
+      #14181c 0%,
+      #1a1f24 49.8%,
+      #ff0000 50%,
+      #440000 50.2%,
+      #0a0101 100%);
   background-attachment: fixed;
 }
 
-@keyframes bg-pulse {
-  0% {
-    background-position: 0% 0%;
-  }
-
-  100% {
-    background-position: 100% 100%;
-  }
-}
-
-/* Upside Down Large Ash Particles */
-body::after {
-  content: "";
-  position: fixed;
-  top: -200%;
-  left: -50%;
-  right: -50%;
-  bottom: 0;
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.4) 2px, transparent 2px),
-    radial-gradient(circle, rgba(200, 200, 200, 0.3) 4px, transparent 4px),
-    radial-gradient(circle, rgba(150, 150, 150, 0.2) 6px, transparent 6px);
-  background-size: 600px 600px, 800px 800px, 1000px 1000px;
-  background-position: 0 0, 150px 200px, 400px 100px;
-  animation: ash-float-large 25s linear infinite;
-  opacity: 0.25;
-  z-index: 10000;
-  pointer-events: none;
-}
-
-@keyframes ash-float-large {
+@keyframes spore-float-drift {
   from {
-    transform: translateY(0) rotate(0deg) skewX(0deg);
+    transform: translateY(0) translateX(0) rotate(0deg);
   }
 
   50% {
-    transform: translateY(50vh) rotate(3deg) skewX(5deg);
+    transform: translateY(-50vh) translateX(50px) rotate(180deg);
   }
 
   to {
-    transform: translateY(100vh) rotate(8deg) skewX(-2deg);
+    transform: translateY(-100vh) translateX(-50px) rotate(360deg);
   }
 }
 
@@ -195,41 +167,97 @@ body::after {
   }
 }
 
-/* CRT Scanline Overlay */
-.crt-overlay {
+/* The Rift: Central Energy Rift */
+.rift-container {
   position: fixed;
   inset: 0;
-  background:
-    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-    linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-  z-index: 9999;
-  background-size: 100% 3px, 3px 100%;
+  z-index: 9996;
   pointer-events: none;
-  opacity: 0.4;
+  display: flex;
+  justify-content: center;
 }
 
-/* Screen Flicker Overlay */
-.flicker-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(18, 16, 16, 0.05);
-  opacity: 0;
-  z-index: 9998;
-  pointer-events: none;
-  animation: screen-flicker 0.15s infinite;
+.rift-line {
+  width: 4px;
+  height: 100%;
+  background: #ff3300;
+  box-shadow:
+    0 0 10px #ff0000,
+    0 0 30px #ff0000,
+    0 0 60px rgba(255, 0, 0, 0.8);
+  position: relative;
+  animation: rift-flicker 0.1s infinite alternate;
 }
 
-@keyframes screen-flicker {
+.rift-line::before {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  background: radial-gradient(circle, rgba(255, 0, 0, 0.4) 0%, transparent 70%);
+  filter: blur(10px);
+  animation: rift-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes rift-flicker {
   0% {
-    opacity: 0.124;
-  }
-
-  50% {
-    opacity: 0.186;
+    opacity: 0.8;
+    transform: scaleX(1) translateX(-1px);
   }
 
   100% {
-    opacity: 0.124;
+    opacity: 1;
+    transform: scaleX(1.5) translateX(1px);
+  }
+}
+
+@keyframes rift-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+
+  100% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+/* Red Spores (replacing ash) */
+.spore-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+.spore {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #ff0000;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff0000;
+  filter: blur(1px);
+  animation: spore-float 20s linear infinite;
+}
+
+@keyframes spore-float {
+  0% {
+    transform: translate(0, 110vh) scale(0.5);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.8;
+  }
+
+  90% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translate(100px, -10vh) scale(1.2);
+    opacity: 0;
   }
 }
 

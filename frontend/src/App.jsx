@@ -10,6 +10,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
 import EntityHallucinations from './components/EntityHallucinations';
+import RiftOverlay from './components/RiftOverlay';
 
 function ProtectedTeamRoute({ children }) {
   const { isTeam } = useAuth();
@@ -62,6 +63,7 @@ export default function App() {
             <div className="flicker-overlay"></div>
             <div className="veins-overlay"></div>
             <EntityHallucinations />
+            <RiftOverlay />
             <AppRoutes />
           </BrowserRouter>
         </SocketProvider>
