@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 const entities = [
-    { id: 'demogorgon', src: '/hallucinations/demogorgon.png', style: { bottom: '0', right: '0', width: '35vw', maxWidth: '500px' } },
-    { id: 'vecna', src: '/hallucinations/vecna.png', style: { top: '10%', right: '0', width: '30vw', maxWidth: '400px' } },
+    { id: 'demogorgon', src: '/hallucinations/demogorgon.png', style: { bottom: '0', left: '-5%', width: '40vw', maxWidth: '600px' } },
+    { id: 'vecna', src: '/hallucinations/vecna.png', style: { top: '10%', right: '-10%', width: '35vw', maxWidth: '500px' } },
 ];
 
 export default function EntityHallucinations() {
