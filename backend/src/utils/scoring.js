@@ -81,21 +81,31 @@ const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0
     // Check if within custom patterns range
     if (teamIndex >= 0 && teamIndex < CUSTOM_PATTERNS.length) {
         const pattern = CUSTOM_PATTERNS[teamIndex];
+
+        // Sort each type by clueNumber so positions are deterministic
+        const sortedP = [...physicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
+        const sortedT = [...technicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
+
         const orderedClues = [];
 
         for (const identifier of pattern) {
             const typeLetter = identifier[0]; // 'P' or 'T'
-            const num = parseInt(identifier.substring(1));
-            const type = typeLetter === 'P' ? 'physical' : 'technical';
+            const pos = parseInt(identifier.substring(1)) - 1; // 0-based position
 
-            const clue = (type === 'physical' ? physicalClues : technicalClues).find(c => c.clueNumber === num);
+            // P1 = sortedP[0]  (the 1st physical clue by clueNumber order)
+            // T1 = sortedT[0]  (the 1st technical clue by clueNumber order)
+            // This works regardless of what actual clueNumber values are stored
+            const clueList = typeLetter === 'P' ? sortedP : sortedT;
+            const clue = clueList[pos];
             if (clue) {
                 orderedClues.push(clue._id);
+            } else {
+                console.warn(`[buildClueOrder] Team ${teamIndex + 1}: ${identifier} not found (pos=${pos}, list length=${clueList.length})`);
             }
         }
 
-        // Add final boss clues
-        const sortedFinal = finalClues.sort((a, b) => a.clueNumber - b.clueNumber);
+        // Add final boss clues at the end
+        const sortedFinal = [...finalClues].sort((a, b) => a.clueNumber - b.clueNumber);
         return [...orderedClues, ...sortedFinal.map(c => c._id)];
     }
 
