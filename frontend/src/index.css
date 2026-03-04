@@ -14,21 +14,30 @@
   --bg-card-hover: rgba(25, 3, 3, 1);
   --bg-glass: rgba(255, 0, 0, 0.08);
 
-  --neon-green: #ff0000;
-  /* Primary Blood Red */
-  --neon-cyan: #440000;
-  --neon-purple: #330000;
-  --neon-pink: #ff1111;
-  --neon-yellow: #ff4400;
-  --neon-orange: #aa0000;
+  --neon-green: #ff4444;
+  /* Primary bright red — used as primary accent */
+  --neon-cyan: #ff9999;
+  /* Light red — was #440000, now readable */
+  --neon-purple: #cc3333;
+  /* Medium red — was #330000 */
+  --neon-pink: #ff6666;
+  /* Bright pink-red */
+  --neon-yellow: #ffaa44;
+  /* Orange-yellow — visible on dark */
+  --neon-orange: #ff5500;
+  /* Bright orange-red */
 
-  --text-primary: #f2e2e2;
-  --text-secondary: #b38888;
-  --text-muted: #664444;
-  --text-neon: #ff0000;
+  --text-primary: #fff5f5;
+  /* Near white — was #f2e2e2, now brighter */
+  --text-secondary: #ffcccc;
+  /* Light pink-white — was #b38888 (too dim) */
+  --text-muted: #cc8888;
+  /* Muted but readable — was #664444 (invisible) */
+  --text-neon: #ff3333;
+  /* Bright neon red */
 
-  --border-glow: rgba(255, 0, 0, 0.6);
-  --border-subtle: rgba(255, 0, 0, 0.3);
+  --border-glow: rgba(255, 60, 60, 0.7);
+  --border-subtle: rgba(255, 60, 60, 0.35);
 
   --font-display: 'Creepster', cursive;
   --font-body: 'EB Garamond', serif;
@@ -106,7 +115,7 @@ body::after {
   background-size: 600px 600px, 800px 800px, 1000px 1000px;
   background-position: 0 0, 150px 200px, 400px 100px;
   animation: ash-float-large 25s linear infinite;
-  opacity: 0.25;
+  opacity: 0.12;
   z-index: 10000;
   pointer-events: none;
 }
@@ -205,7 +214,7 @@ body::after {
   z-index: 9999;
   background-size: 100% 3px, 3px 100%;
   pointer-events: none;
-  opacity: 0.4;
+  opacity: 0.15;
 }
 
 /* Screen Flicker Overlay */
@@ -221,15 +230,15 @@ body::after {
 
 @keyframes screen-flicker {
   0% {
-    opacity: 0.124;
+    opacity: 0.06;
   }
 
   50% {
-    opacity: 0.186;
+    opacity: 0.09;
   }
 
   100% {
-    opacity: 0.124;
+    opacity: 0.06;
   }
 }
 
