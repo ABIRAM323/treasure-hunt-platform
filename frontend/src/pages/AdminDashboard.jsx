@@ -386,6 +386,58 @@ export default function AdminDashboard() {
                             <button className="btn btn-primary btn-sm" onClick={() => setClueModal({})}>+ Create Clue</button>
                         </div>
 
+                        {/* Demo Clue Quick Setup */}
+                        <div className="card" style={{ marginBottom: '1.5rem', borderColor: 'rgba(0,255,255,0.2)', background: 'rgba(0,255,255,0.03)' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div>
+                                    <h3 style={{ marginBottom: '0.4rem' }}>🌱 Demo Clue Setup</h3>
+                                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+                                        Quickly populate the database with demo clues matching the 10-team pattern.
+                                    </p>
+                                    <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--neon-cyan)' }}>24</div>
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>📍 Physical</div>
+                                        </div>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--neon-green)' }}>2</div>
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>💻 Technical</div>
+                                        </div>
+                                        <div style={{ textAlign: 'center' }}>
+                                            <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.8rem', color: 'var(--neon-pink)' }}>1</div>
+                                            <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>🏆 Final Boss</div>
+                                        </div>
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
+                                        Physical clues use campus locations (Main Gate, Library, Lab A … Roof Terrace)
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                        Technical clues: T1 = HTML question, T2 = HTTP 404 question
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'flex-end' }}>
+                                    <button
+                                        className="btn btn-primary"
+                                        onClick={() => seedDemoClues(false)}
+                                    >
+                                        + Add Missing Clues
+                                    </button>
+                                    <button
+                                        className="btn btn-ghost"
+                                        style={{ borderColor: 'rgba(255,80,80,0.4)', color: 'var(--neon-pink)', fontSize: '0.8rem' }}
+                                        onClick={() => seedDemoClues(true)}
+                                    >
+                                        ⚠️ Re-seed All (Delete & Recreate)
+                                    </button>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-muted)', textAlign: 'right' }}>
+                                        Currently: {clues.filter(c => c.type === 'physical').length}P &nbsp;
+                                        {clues.filter(c => c.type === 'technical').length}T &nbsp;
+                                        {clues.filter(c => c.type === 'final').length}F
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="card">
                             <div className="table-wrap">
                                 <table className="table">
