@@ -47,7 +47,7 @@ const PHYSICAL_CLUES = [
     hasQR: true,
 }));
 
-// ─── 2 Technical Clues (T1, T2) ────────────────────────────────────────────
+// ─── 4 Technical Clues (T1 - T4) ────────────────────────────────────────────
 const TECHNICAL_CLUES = [
     {
         clueNumber: 1,
@@ -73,6 +73,32 @@ const TECHNICAL_CLUES = [
         locationCoords: { x: 0, y: 0 },
         points: 200,
         hint: 'You\'ve probably seen this error in your browser when a page is missing.',
+        hasQR: false,
+    },
+    {
+        clueNumber: 3,
+        type: 'technical',
+        difficulty: 'medium',
+        title: 'Technical Challenge T3: Version Control',
+        clueText: 'Which command is used to record changes to the repository in Git?',
+        answer: 'git commit',
+        locationName: '',
+        locationCoords: { x: 0, y: 0 },
+        points: 200,
+        hint: 'You use this along with a message (-m) to save your work.',
+        hasQR: false,
+    },
+    {
+        clueNumber: 4,
+        type: 'technical',
+        difficulty: 'medium',
+        title: 'Technical Challenge T4: Styling',
+        clueText: 'What does CSS stand for?',
+        answer: 'Cascading Style Sheets',
+        locationName: '',
+        locationCoords: { x: 0, y: 0 },
+        points: 200,
+        hint: 'It describes how HTML elements are to be displayed.',
         hasQR: false,
     },
 ];
@@ -107,6 +133,8 @@ const SAMPLE_TEAMS = [
     { teamId: 'TEAM08', name: 'Bit Shifters', password: 'bitshift444', members: [{ name: 'Wendy', role: 'Leader' }, { name: 'Xander', role: 'Dev' }] },
     { teamId: 'TEAM09', name: 'Hex Hunters', password: 'hexhunt555', members: [{ name: 'Yara', role: 'Leader' }, { name: 'Zane', role: 'Dev' }] },
     { teamId: 'TEAM10', name: 'Logic Bombers', password: 'logic666', members: [{ name: 'Aaron', role: 'Leader' }, { name: 'Beth', role: 'Dev' }] },
+    { teamId: 'TEAM11', name: 'Code Breakers', password: 'code111', members: [{ name: 'Carl', role: 'Leader' }, { name: 'Dan', role: 'Dev' }] },
+    { teamId: 'TEAM12', name: 'Data Miners', password: 'data222', members: [{ name: 'Ed', role: 'Leader' }, { name: 'Fay', role: 'Dev' }] },
 ];
 
 /**
@@ -120,9 +148,9 @@ const seedDatabase = async () => {
     await Event.deleteMany({});
     console.log('🗑️  Cleared existing data');
 
-    // Insert clues (27 total: 24P + 2T + 1F)
+    // Insert clues (29 total: 24P + 4T + 1F)
     const insertedClues = await Clue.insertMany(CLUES);
-    console.log(`✅ Inserted ${insertedClues.length} clues (24 Physical + 2 Technical + 1 Final)`);
+    console.log(`✅ Inserted ${insertedClues.length} clues (24 Physical + 4 Technical + 1 Final)`);
 
     // Generate QR hashes
     for (const clue of insertedClues) {
@@ -136,7 +164,7 @@ const seedDatabase = async () => {
     const technicalClues = insertedClues.filter(c => c.type === 'technical');
     const finalClues = insertedClues.filter(c => c.type === 'final');
 
-    // Insert 10 sample teams with correct custom patterns
+    // Insert 12 sample teams with correct custom patterns
     for (let idx = 0; idx < SAMPLE_TEAMS.length; idx++) {
         const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues, idx);
         await Team.create({ ...SAMPLE_TEAMS[idx], clueOrder });
