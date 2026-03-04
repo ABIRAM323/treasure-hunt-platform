@@ -5,7 +5,8 @@ const clueSchema = new mongoose.Schema(
         clueNumber: {
             type: Number,
             required: true,
-            unique: true,
+            // Uniqueness enforced by compound index below: (clueNumber + type)
+            // This allows P1 and T1 to coexist in the database
         },
         type: {
             type: String,
@@ -70,5 +71,8 @@ const clueSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
+
+// Compound unique index: P1 (physical, 1), T1 (technical, 1), F1 (final, 1) can all coexist
+clueSchema.index({ clueNumber: 1, type: 1 }, { unique: true });
 
 module.exports = mongoose.model('Clue', clueSchema);

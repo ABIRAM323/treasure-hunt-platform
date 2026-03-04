@@ -98,32 +98,36 @@ router.delete('/teams/:id', requireAdmin, async (req, res) => {
 
 // POST reapply custom clue patterns to ALL teams (does not reset scores/progress)
 router.post('/teams/reapply-patterns', requireAdmin, async (req, res) => {
-    const physicalClues = await Clue.find({ type: 'physical', isActive: true }).sort({ clueNumber: 1 });
-    const technicalClues = await Clue.find({ type: 'technical', isActive: true }).sort({ clueNumber: 1 });
-    const finalClues = await Clue.find({ type: 'final', isActive: true }).sort({ clueNumber: 1 });
+    // Fetch ALL clues regardless of isActive — admin may have just created them
+    const physicalClues = await Clue.find({ type: 'physical' }).sort({ clueNumber: 1 });
+    const technicalClues = await Clue.find({ type: 'technical' }).sort({ clueNumber: 1 });
+    const finalClues = await Clue.find({ type: 'final' }).sort({ clueNumber: 1 });
 
     if (!physicalClues.length || !technicalClues.length) {
         return res.status(400).json({
             success: false,
-            message: `Not enough clues found. Physical: ${physicalClues.length}, Technical: ${technicalClues.length}. Please add all clues first.`,
+            message: `Not enough clues. Physical: ${physicalClues.length}, Technical: ${technicalClues.length}, Final: ${finalClues.length}`,
+            physicalNumbers: physicalClues.map(c => c.clueNumber),
+            technicalNumbers: technicalClues.map(c => c.clueNumber),
         });
     }
 
     const teams = await Team.find().sort({ createdAt: 1 });
-    let updated = 0;
+    const results = [];
     for (let idx = 0; idx < teams.length; idx++) {
         const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues, idx);
         teams[idx].clueOrder = clueOrder;
         await teams[idx].save();
-        updated++;
+        results.push({ team: teams[idx].name, clueCount: clueOrder.length });
     }
 
     res.json({
         success: true,
-        message: `Patterns reapplied for ${updated} team(s). Physical: ${physicalClues.length}, Technical: ${technicalClues.length}, Final: ${finalClues.length}.`,
-        updated,
+        message: `Patterns reapplied for ${teams.length} team(s). P:${physicalClues.length} T:${technicalClues.length} F:${finalClues.length}`,
+        teams: results,
     });
 });
+
 
 // POST reset a team's progress
 router.post('/teams/:id/reset', requireAdmin, async (req, res) => {
