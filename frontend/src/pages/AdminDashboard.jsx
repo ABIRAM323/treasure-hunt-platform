@@ -16,6 +16,7 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState(null);
     const [qrModal, setQrModal] = useState(null);
+    const [teamModal, setTeamModal] = useState(null);
     const [clueModal, setClueModal] = useState(null);
     const [statsModal, setStatsModal] = useState(null);
     const navigate = useNavigate();
@@ -105,6 +106,17 @@ export default function AdminDashboard() {
         await api.post('/admin/event/reset');
         flash('Event reset!');
         fetchAll();
+    };
+
+    const seedDemoClues = async (force) => {
+        if (force && !confirm('This will DELETE all existing physical/technical clues and re-seed. Continue?')) return;
+        try {
+            const { data } = await api.post('/seed/clues', { force });
+            flash(`✅ ${data.message}`);
+            fetchAll();
+        } catch (err) {
+            flash(err.response?.data?.message || 'Seeding failed', 'warning');
+        }
     };
 
     const handleExport = () => {
@@ -408,6 +420,29 @@ export default function AdminDashboard() {
                             onStop={stopEvent}
                             onReset={resetEvent}
                         />
+
+                        {/* Seed Demo Clues */}
+                        <div className="card" style={{ marginTop: '2rem', borderColor: 'rgba(0,255,136,0.2)' }}>
+                            <h3 style={{ marginBottom: '0.5rem' }}>🌱 Seed Demo Clues</h3>
+                            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.25rem' }}>
+                                Auto-create 13 Physical + 13 Technical + 1 Final demo clues and apply the team patterns automatically.
+                            </p>
+                            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                <button
+                                    className="btn btn-primary"
+                                    onClick={() => seedDemoClues(false)}
+                                >
+                                    + Add Missing Clues
+                                </button>
+                                <button
+                                    className="btn btn-ghost"
+                                    style={{ borderColor: 'rgba(255,80,80,0.4)', color: 'var(--neon-pink)' }}
+                                    onClick={() => seedDemoClues(true)}
+                                >
+                                    ⚠️ Re-seed (Delete & Recreate)
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
 
