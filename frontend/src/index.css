@@ -27,12 +27,12 @@
   --neon-orange: #ff5500;
   /* Bright orange-red */
 
-  --text-primary: #fff5f5;
-  /* Near white — was #f2e2e2, now brighter */
-  --text-secondary: #ffcccc;
-  /* Light pink-white — was #b38888 (too dim) */
-  --text-muted: #cc8888;
-  /* Muted but readable — was #664444 (invisible) */
+  --text-primary: #ffffff;
+  /* Pure white */
+  --text-secondary: #ffe8e8;
+  /* Warm white — always readable */
+  --text-muted: #ffbbbb;
+  /* Light pink — clearly visible */
   --text-neon: #ff3333;
   /* Bright neon red */
 
