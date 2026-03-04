@@ -102,6 +102,16 @@ export default function AdminDashboard() {
         fetchTeams();
     };
 
+    const reapplyPatterns = async () => {
+        try {
+            const { data } = await api.post('/admin/teams/reapply-patterns');
+            flash(`✅ ${data.message}`);
+            fetchAll();
+        } catch (err) {
+            flash(err.response?.data?.message || 'Failed to reapply patterns', 'warning');
+        }
+    };
+
     const resetTeam = async (id) => {
         await api.post(`/admin/teams/${id}/reset`);
         flash('Team reset');
@@ -318,7 +328,22 @@ export default function AdminDashboard() {
                     <div className="animate-fade-in">
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                             <h2>Team Management</h2>
-                            <button className="btn btn-primary btn-sm" onClick={() => setTeamModal({})}>+ Create Team</button>
+                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                <button
+                                    className="btn btn-ghost btn-sm"
+                                    style={{ borderColor: 'rgba(0,255,255,0.3)', color: 'var(--neon-cyan)' }}
+                                    onClick={reapplyPatterns}
+                                    title="Re-assign clue order to all teams based on custom patterns"
+                                >
+                                    🔄 Re-apply Patterns
+                                </button>
+                                <button className="btn btn-primary btn-sm" onClick={() => setTeamModal({})}>+ Create Team</button>
+                            </div>
+                        </div>
+
+                        {/* Pattern info banner */}
+                        <div style={{ marginBottom: '1rem', padding: '0.75rem 1rem', background: 'rgba(0,255,255,0.05)', border: '1px solid rgba(0,255,255,0.15)', borderRadius: 'var(--radius-md)', fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                            💡 Teams are assigned patterns by creation order (Team 1 = P1→T1→P11…, Team 2 = P2→P12→T2…). Click <strong style={{ color: 'var(--neon-cyan)' }}>Re-apply Patterns</strong> after adding all clues.
                         </div>
 
                         <div className="card">

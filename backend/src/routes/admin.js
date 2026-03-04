@@ -96,6 +96,35 @@ router.delete('/teams/:id', requireAdmin, async (req, res) => {
     res.json({ success: true, message: 'Team deleted' });
 });
 
+// POST reapply custom clue patterns to ALL teams (does not reset scores/progress)
+router.post('/teams/reapply-patterns', requireAdmin, async (req, res) => {
+    const physicalClues = await Clue.find({ type: 'physical', isActive: true }).sort({ clueNumber: 1 });
+    const technicalClues = await Clue.find({ type: 'technical', isActive: true }).sort({ clueNumber: 1 });
+    const finalClues = await Clue.find({ type: 'final', isActive: true }).sort({ clueNumber: 1 });
+
+    if (!physicalClues.length || !technicalClues.length) {
+        return res.status(400).json({
+            success: false,
+            message: `Not enough clues found. Physical: ${physicalClues.length}, Technical: ${technicalClues.length}. Please add all clues first.`,
+        });
+    }
+
+    const teams = await Team.find().sort({ createdAt: 1 });
+    let updated = 0;
+    for (let idx = 0; idx < teams.length; idx++) {
+        const clueOrder = buildClueOrder(physicalClues, technicalClues, finalClues, idx);
+        teams[idx].clueOrder = clueOrder;
+        await teams[idx].save();
+        updated++;
+    }
+
+    res.json({
+        success: true,
+        message: `Patterns reapplied for ${updated} team(s). Physical: ${physicalClues.length}, Technical: ${technicalClues.length}, Final: ${finalClues.length}.`,
+        updated,
+    });
+});
+
 // POST reset a team's progress
 router.post('/teams/:id/reset', requireAdmin, async (req, res) => {
     const team = await Team.findById(req.params.id);
