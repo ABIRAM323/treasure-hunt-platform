@@ -11,6 +11,36 @@ const TYPE_COLORS = { physical: 'cyan', technical: 'green', final: 'purple' };
 const TYPE_LABELS = { physical: '📍 Physical Clue', technical: '💻 Technical Clue', final: '🏆 Final Boss' };
 const DIFF_BADGE = { easy: 'badge-green', medium: 'badge-yellow', hard: 'badge-orange', boss: 'badge-pink' };
 
+function ClueTimer({ startTime, isFinished }) {
+    const [elapsed, setElapsed] = useState(0);
+
+    useEffect(() => {
+        if (!startTime || isFinished) return;
+
+        const start = new Date(startTime).getTime();
+        const interval = setInterval(() => {
+            setElapsed(Math.floor((Date.now() - start) / 1000));
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [startTime, isFinished]);
+
+    if (!startTime || isFinished) return null;
+
+    const formatTime = (seconds) => {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
+
+    return (
+        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.2rem', color: 'var(--neon-cyan)', textShadow: '0 0 10px rgba(0,255,255,0.3)' }}>
+            {formatTime(elapsed)}
+        </div>
+    );
+}
+
 export default function TeamDashboard() {
     const { user } = useAuth();
     const { eventState } = useSocket();
@@ -94,11 +124,19 @@ export default function TeamDashboard() {
                             Team ID: <span style={{ color: 'var(--neon-cyan)' }}>{user?.teamId}</span>
                         </p>
                     </div>
-                    <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--neon-yellow)', textShadow: '0 0 15px rgba(255,224,0,0.4)' }}>
-                            {score || 0}
+                    <div style={{ textAlign: 'right', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <div style={{ textAlign: 'right' }}>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Clue Timer</div>
+                                <ClueTimer startTime={clueData?.clueStartTime} isFinished={finished} />
+                            </div>
+                            <div style={{ borderLeft: '1px solid var(--border-subtle)', paddingLeft: '1rem' }}>
+                                <div style={{ fontFamily: 'var(--font-display)', fontSize: '2rem', color: 'var(--neon-yellow)', textShadow: '0 0 15px rgba(255,224,0,0.4)', lineHeight: 1 }}>
+                                    {score || 0}
+                                </div>
+                                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.6rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '0.2rem' }}>points</div>
+                            </div>
                         </div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>points</div>
                     </div>
                 </div>
 

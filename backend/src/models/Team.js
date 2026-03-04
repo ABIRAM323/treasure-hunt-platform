@@ -61,6 +61,22 @@ const teamSchema = new mongoose.Schema(
         completedAt: {
             type: Date,
         },
+        clueStartTime: {
+            type: Date,
+        },
+        clueDurations: [
+            {
+                clueId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Clue',
+                },
+                durationMs: Number,
+                completedAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+            },
+        ],
     },
     { timestamps: true }
 );

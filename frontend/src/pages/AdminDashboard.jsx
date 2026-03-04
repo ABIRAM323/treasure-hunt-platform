@@ -16,8 +16,8 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [msg, setMsg] = useState(null);
     const [qrModal, setQrModal] = useState(null);
-    const [teamModal, setTeamModal] = useState(null);
     const [clueModal, setClueModal] = useState(null);
+    const [statsModal, setStatsModal] = useState(null);
     const navigate = useNavigate();
 
     const flash = (text, type = 'success') => {
@@ -174,6 +174,11 @@ export default function AdminDashboard() {
                 </div>
             )}
 
+            {/* Stats Modal */}
+            {statsModal && (
+                <TeamStatsModal team={statsModal} onClose={() => setStatsModal(null)} />
+            )}
+
             <div className="container" style={{ padding: '1.5rem' }}>
                 {/* Tab Bar */}
                 <div style={{ display: 'flex', gap: '0.5rem', overflowX: 'auto', marginBottom: '2rem', paddingBottom: '0.5rem' }}>
@@ -219,6 +224,7 @@ export default function AdminDashboard() {
                                             <th>Team</th>
                                             <th>Score</th>
                                             <th>Progress</th>
+                                            <th>Time</th>
                                             <th>Status</th>
                                             <th>Last Location</th>
                                             <th>Actions</th>
@@ -235,6 +241,15 @@ export default function AdminDashboard() {
                                                 <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
                                                     {team.currentClueIndex}/{team.totalClues}
                                                 </td>
+                                                <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
+                                                    {(() => {
+                                                        const totalMs = (team.clueDurations || []).reduce((acc, d) => acc + d.durationMs, 0);
+                                                        const h = Math.floor(totalMs / 3600000);
+                                                        const m = Math.floor((totalMs % 3600000) / 60000);
+                                                        const s = Math.floor((totalMs % 60000) / 1000);
+                                                        return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s`;
+                                                    })()}
+                                                </td>
                                                 <td>
                                                     <span className={`badge ${team.status === 'finished' ? 'badge-yellow' :
                                                         team.status === 'final' ? 'badge-purple' :
@@ -244,6 +259,7 @@ export default function AdminDashboard() {
                                                 <td style={{ fontSize: '0.85rem' }}>{team.lastLocation || '—'}</td>
                                                 <td>
                                                     <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                        <button onClick={() => setStatsModal(team)} className="btn btn-ghost btn-sm" title="View time stats">📊</button>
                                                         <button onClick={() => skipClue(team.id)} className="btn btn-ghost btn-sm" title="Skip clue">⏭</button>
                                                         <button onClick={() => resetTeam(team.id)} className="btn btn-ghost btn-sm" title="Reset team">↺</button>
                                                     </div>
@@ -432,7 +448,52 @@ export default function AdminDashboard() {
     );
 }
 
-// ─── Sub-components ───
+function TeamStatsModal({ team, onClose }) {
+    const formatDuration = (ms) => {
+        const m = Math.floor(ms / 60000);
+        const s = Math.floor((ms % 60000) / 1000);
+        return `${m}m ${s}s`;
+    };
+
+    const totalMs = (team.clueDurations || []).reduce((acc, d) => acc + d.durationMs, 0);
+
+    return (
+        <div className="overlay" onClick={onClose}>
+            <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '400px' }}>
+                <h3 style={{ marginBottom: '0.5rem' }}>Team Time Logs</h3>
+                <p style={{ color: 'var(--text-neon)', fontSize: '1.1rem', marginBottom: '1.5rem', fontWeight: 600 }}>{team.name}</p>
+
+                <div style={{ maxHeight: '300px', overflowY: 'auto', marginBottom: '1.5rem', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)' }}>
+                    <table className="table table-sm">
+                        <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-card)' }}>
+                            <tr><th>Clue #</th><th>Duration</th></tr>
+                        </thead>
+                        <tbody>
+                            {(team.clueDurations || []).map((d, i) => (
+                                <tr key={i}>
+                                    <td style={{ fontFamily: 'var(--font-mono)' }}>Clue {i + 1}</td>
+                                    <td style={{ fontFamily: 'var(--font-mono)', color: 'var(--neon-cyan)' }}>{formatDuration(d.durationMs)}</td>
+                                </tr>
+                            ))}
+                            {(team.clueDurations || []).length === 0 && (
+                                <tr><td colSpan={2} style={{ textAlign: 'center', color: 'var(--text-muted)' }}>No clues completed yet</td></tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Total Time</span>
+                    <span style={{ fontFamily: 'var(--font-display)', color: 'var(--neon-yellow)', fontSize: '1.5rem' }}>
+                        {Math.floor(totalMs / 60000)}m {Math.floor((totalMs % 60000) / 1000)}s
+                    </span>
+                </div>
+
+                <button className="btn btn-ghost w-full" style={{ marginTop: '1.5rem' }} onClick={onClose}>Close</button>
+            </div>
+        </div>
+    );
+}
 
 function EventControls({ event, onStart, onStop, onReset }) {
     const [duration, setDuration] = useState(3);

@@ -55,8 +55,21 @@ const calculateScore = (difficulty, attemptCount = 0, eventStartTime = null, eve
  */
 const FINAL_BOSS_BONUS = 500;
 
+const CUSTOM_PATTERNS = [
+    ['P6', 'T3', 'P12', 'T11', 'P9', 'T8', 'P5', 'T6'], // Team 1
+    ['P2', 'T9', 'P13', 'T12', 'P10', 'T9', 'P6', 'T7'], // Team 2
+    ['P8', 'T1', 'P11', 'T13', 'P11', 'T10', 'P7', 'T8'], // Team 3
+    ['P1', 'T5', 'P7', 'T3', 'P8', 'T11', 'P8', 'T9'], // Team 4
+    ['P9', 'T7', 'P5', 'T2', 'P12', 'T12', 'P9', 'T10'], // Team 5
+    ['P4', 'T4', 'P3', 'T6', 'P1', 'T13', 'P10', 'T11'], // Team 6
+    ['P10', 'T2', 'P6', 'T5', 'P2', 'T1', 'P11', 'T12'], // Team 7
+    ['P5', 'T6', 'P4', 'T7', 'P3', 'T2', 'P12', 'T13'], // Team 8
+    ['P3', 'T8', 'P2', 'T4', 'P4', 'T3', 'P13', 'T1'], // Team 9
+    ['P7', 'T10', 'P1', 'T1', 'P5', 'T4', 'P1', 'T5'], // Team 10
+];
+
 /**
- * Get clue distribution for a team using a shifted cyclic pattern.
+ * Get clue distribution for a team using a shifted cyclic pattern or custom pattern.
  * Each team starts at a different physical/technical clue to prevent bunching.
  * @param {Array} physicalClues - array of physical clue docs
  * @param {Array} technicalClues - array of technical clue docs
@@ -65,6 +78,27 @@ const FINAL_BOSS_BONUS = 500;
  * @returns {Array} ordered clue IDs
  */
 const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0) => {
+    // Check if within custom patterns range
+    if (teamIndex >= 0 && teamIndex < CUSTOM_PATTERNS.length) {
+        const pattern = CUSTOM_PATTERNS[teamIndex];
+        const orderedClues = [];
+
+        for (const identifier of pattern) {
+            const typeLetter = identifier[0]; // 'P' or 'T'
+            const num = parseInt(identifier.substring(1));
+            const type = typeLetter === 'P' ? 'physical' : 'technical';
+
+            const clue = (type === 'physical' ? physicalClues : technicalClues).find(c => c.clueNumber === num);
+            if (clue) {
+                orderedClues.push(clue._id);
+            }
+        }
+
+        // Add final boss clues
+        const sortedFinal = finalClues.sort((a, b) => a.clueNumber - b.clueNumber);
+        return [...orderedClues, ...sortedFinal.map(c => c._id)];
+    }
+
     // Sort clues by number
     const sortedP = [...physicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
     const sortedT = [...technicalClues].sort((a, b) => a.clueNumber - b.clueNumber);
@@ -90,7 +124,7 @@ const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0
     const shiftedNormalClues = [
         ...interleaved.slice(shiftIndex),
         ...interleaved.slice(0, shiftIndex)
-    ].slice(0, 8); // LIMIT to exactly 8 clues per the user pattern
+    ].slice(0, 8);
 
     // Final boss clues come at the end, sorted deterministically
     const sortedFinal = finalClues.sort((a, b) => a.clueNumber - b.clueNumber);
@@ -100,12 +134,11 @@ const buildClueOrder = (physicalClues, technicalClues, finalClues, teamIndex = 0
 
 /**
  * Determine if Final Boss should be unlocked
- * Unlock when 70% of physical+technical clues are completed
+ * Unlock when 100% of physical+technical clues are completed
  * @param {number} completedCount 
  * @param {number} totalPhysicalTechnical 
  */
 const isFinalBossUnlocked = (completedCount, totalPhysicalTechnical) => {
-    // Require 100% of normal clues to be completed before unlocking final bosses
     return completedCount >= totalPhysicalTechnical;
 };
 

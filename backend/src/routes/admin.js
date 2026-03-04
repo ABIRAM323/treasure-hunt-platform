@@ -119,6 +119,8 @@ router.post('/teams/:id/reset', requireAdmin, async (req, res) => {
     team.status = 'waiting';
     team.startTime = null;
     team.completedAt = null;
+    team.clueStartTime = null;
+    team.clueDurations = [];
     await team.save();
 
     await Attempt.deleteMany({ teamId: team._id });
@@ -250,7 +252,16 @@ router.post('/event/start', requireAdmin, async (req, res) => {
     await event.save();
 
     // Update all waiting teams to searching
-    await Team.updateMany({ status: 'waiting' }, { $set: { status: 'searching', startTime: event.startTime } });
+    await Team.updateMany(
+        { status: 'waiting' },
+        {
+            $set: {
+                status: 'searching',
+                startTime: event.startTime,
+                clueStartTime: event.startTime
+            }
+        }
+    );
 
     const io = req.app.get('io');
     if (io) {
@@ -304,6 +315,8 @@ router.post('/event/reset', requireAdmin, async (req, res) => {
         team.status = 'waiting';
         team.startTime = null;
         team.completedAt = null;
+        team.clueStartTime = null;
+        team.clueDurations = [];
         await team.save();
     }
     await Attempt.deleteMany({});
@@ -370,6 +383,8 @@ router.get('/progress', requireAdmin, async (req, res) => {
         currentClue: team.clueOrder && team.clueOrder[team.currentClueIndex]
             ? team.clueOrder[team.currentClueIndex]
             : null,
+        clueDurations: team.clueDurations,
+        clueStartTime: team.clueStartTime,
     }));
 
     res.json({ success: true, progress });

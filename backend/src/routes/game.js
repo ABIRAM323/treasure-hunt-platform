@@ -80,6 +80,7 @@ router.get('/current-clue', requireTeam, async (req, res) => {
         score: team.score,
         status: team.status,
         attemptCount: attempt ? attempt.attemptCount : 0,
+        clueStartTime: team.clueStartTime,
     });
 });
 
@@ -204,6 +205,7 @@ router.get('/progress', requireTeam, async (req, res) => {
         currentClueIndex: team.currentClueIndex,
         totalClues: team.clueOrder.length,
         lastLocation: team.lastLocation,
+        clueStartTime: team.clueStartTime,
     });
 });
 
@@ -217,7 +219,19 @@ async function advanceTeam(team, currentClue, attempt, event, io) {
     );
 
     team.score += total;
+
+    // Record clue duration
+    if (team.clueStartTime) {
+        const durationMs = Date.now() - new Date(team.clueStartTime).getTime();
+        team.clueDurations.push({
+            clueId: currentClue._id,
+            durationMs,
+            completedAt: new Date()
+        });
+    }
+
     team.currentClueIndex += 1;
+    team.clueStartTime = new Date(); // Reset for next clue
 
     if (currentClue.locationName) {
         team.lastLocation = currentClue.locationName;
