@@ -7,6 +7,48 @@ import AdminMap from '../components/AdminMap';
 const TABS = ['overview', 'teams', 'clues', 'event', 'map', 'export'];
 const TAB_LABELS = { overview: '📊 Overview', teams: '👥 Teams', clues: '🗺 Clues', event: '⏱ Event', map: '📍 Map', export: '📥 Export' };
 
+// Live timer for admin table: shows hours:mm:ss since team started (or total if finished)
+function AdminTeamTimer({ team }) {
+    const [elapsed, setElapsed] = useState(0);
+
+    const startTime = team.startTime || team.clueStartTime;
+    const isFinished = team.status === 'finished';
+
+    useEffect(() => {
+        // If finished, compute final time from clueDurations total
+        if (isFinished) {
+            const total = (team.clueDurations || []).reduce((a, d) => a + d.durationMs, 0);
+            setElapsed(Math.floor(total / 1000));
+            return;
+        }
+        if (!startTime) return;
+        const start = new Date(startTime).getTime();
+        const update = () => setElapsed(Math.floor((Date.now() - start) / 1000));
+        update();
+        const id = setInterval(update, 1000);
+        return () => clearInterval(id);
+    }, [startTime, isFinished]);
+
+    const fmt = (s) => {
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        return `${h > 0 ? h + ':' : ''}${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    };
+
+    if (!startTime && !isFinished) return <span style={{ color: 'var(--text-muted)' }}>—</span>;
+
+    return (
+        <span style={{
+            fontFamily: 'var(--font-mono)',
+            color: isFinished ? 'var(--neon-yellow)' : 'var(--neon-cyan)',
+            fontSize: '0.85rem',
+        }}>
+            {fmt(elapsed)}{!isFinished && <span style={{ fontSize: '0.6rem', marginLeft: 4, opacity: 0.6 }}>live</span>}
+        </span>
+    );
+}
+
 export default function AdminDashboard() {
     const [tab, setTab] = useState('overview');
     const [progress, setProgress] = useState([]);
@@ -253,14 +295,8 @@ export default function AdminDashboard() {
                                                 <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
                                                     {team.currentClueIndex}/{team.totalClues}
                                                 </td>
-                                                <td style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
-                                                    {(() => {
-                                                        const totalMs = (team.clueDurations || []).reduce((acc, d) => acc + d.durationMs, 0);
-                                                        const h = Math.floor(totalMs / 3600000);
-                                                        const m = Math.floor((totalMs % 3600000) / 60000);
-                                                        const s = Math.floor((totalMs % 60000) / 1000);
-                                                        return `${h > 0 ? h + 'h ' : ''}${m}m ${s}s`;
-                                                    })()}
+                                                <td>
+                                                    <AdminTeamTimer team={team} />
                                                 </td>
                                                 <td>
                                                     <span className={`badge ${team.status === 'finished' ? 'badge-yellow' :
