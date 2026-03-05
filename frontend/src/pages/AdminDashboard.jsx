@@ -142,11 +142,10 @@ export default function AdminDashboard() {
         const img = new Image();
         img.onload = () => {
             const headerH = withLabel ? 60 : 0;
-            const locH = withLabel && qrData.locationName ? 36 : 0;
             const tokenH = withLabel && qrData.qrToken ? 48 : 0;
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
-            canvas.height = img.height + headerH + locH + tokenH;
+            canvas.height = img.height + headerH + tokenH;
             const ctx = canvas.getContext('2d');
 
             // Background
@@ -178,20 +177,9 @@ export default function AdminDashboard() {
 
             const belowQR = headerH + img.height;
 
-            // ── Location footer ──
-            if (withLabel && qrData.locationName) {
-                ctx.fillStyle = '#111122';
-                ctx.fillRect(0, belowQR, canvas.width, locH);
-                ctx.fillStyle = '#00ff88';
-                ctx.font = `${Math.round(locH * 0.45)}px monospace`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(`📍 ${qrData.locationName}`, canvas.width / 2, belowQR + locH / 2);
-            }
-
             // ── Token row ──
             if (withLabel && qrData.qrToken) {
-                const tokenY = belowQR + locH;
+                const tokenY = belowQR;
                 ctx.fillStyle = '#0d0d22';
                 ctx.fillRect(0, tokenY, canvas.width, tokenH);
 
@@ -836,6 +824,7 @@ function ClueFormModal({ clue, onClose, onSave }) {
         points: clue.points || 200,
         hint: clue.hint || '',
         hasQR: clue.hasQR !== undefined ? clue.hasQR : true,
+        isMediaEnabled: clue.isMediaEnabled !== undefined ? clue.isMediaEnabled : true,
         mediaType: clue.mediaType || 'none',
         mediaUrl: clue.mediaUrl || '',
     });
@@ -923,6 +912,11 @@ function ClueFormModal({ clue, onClose, onSave }) {
                     <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <input type="checkbox" checked={form.hasQR} onChange={(e) => setForm(f => ({ ...f, hasQR: e.target.checked }))} id="hasQRCheck" style={{ width: 'auto', marginRight: '0.5rem' }} />
                         <label className="form-label" htmlFor="hasQRCheck" style={{ marginBottom: 0, textTransform: 'none', letterSpacing: 'normal' }}>Enable QR code scanning for this clue</label>
+                    </div>
+
+                    <div className="form-group" style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <input type="checkbox" checked={form.isMediaEnabled} onChange={(e) => setForm(f => ({ ...f, isMediaEnabled: e.target.checked }))} id="mediaCheck" style={{ width: 'auto', marginRight: '0.5rem' }} />
+                        <label className="form-label" htmlFor="mediaCheck" style={{ marginBottom: 0, textTransform: 'none', letterSpacing: 'normal' }}>Enable Media for this Clue</label>
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>

@@ -218,7 +218,7 @@ export default function TeamDashboard() {
                             fontFamily: 'var(--font-body)', lineHeight: '1.8', color: 'var(--text-primary)', fontSize: '1.05rem',
                         }}>
                             {clue.clueText}
-                            {clue.mediaType === 'image' && clue.mediaUrl && (
+                            {clue.isMediaEnabled && clue.mediaType === 'image' && clue.mediaUrl && (
                                 <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                                     <img
                                         src={clue.mediaUrl.startsWith('/uploads') ? (import.meta.env.VITE_API_URL || '') + clue.mediaUrl : clue.mediaUrl}
@@ -227,7 +227,7 @@ export default function TeamDashboard() {
                                     />
                                 </div>
                             )}
-                            {clue.mediaType === 'audio' && clue.mediaUrl && (
+                            {clue.isMediaEnabled && clue.mediaType === 'audio' && clue.mediaUrl && (
                                 <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                                     <audio
                                         controls
@@ -238,7 +238,7 @@ export default function TeamDashboard() {
                                     </audio>
                                 </div>
                             )}
-                            {clue.mediaType === 'video' && clue.mediaUrl && (
+                            {clue.isMediaEnabled && clue.mediaType === 'video' && clue.mediaUrl && (
                                 <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
                                     <video
                                         controls

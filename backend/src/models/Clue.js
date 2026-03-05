@@ -39,6 +39,10 @@ const clueSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        isMediaEnabled: {
+            type: Boolean,
+            default: true,
+        },
         mediaType: {
             type: String,
             enum: ['image', 'audio', 'video', 'none'],

@@ -209,12 +209,12 @@ router.get('/clues/:id', requireAdmin, async (req, res) => {
 
 // POST create clue
 router.post('/clues', requireAdmin, async (req, res) => {
-    const { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint, hasQR } = req.body;
+    const { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint, hasQR, isMediaEnabled, mediaType, mediaUrl } = req.body;
     if (!clueNumber || !type || !difficulty || !title || !clueText || !answer) {
         return res.status(400).json({ success: false, message: 'Missing required clue fields' });
     }
 
-    const clueData = { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint, hasQR: hasQR !== undefined ? hasQR : true };
+    const clueData = { clueNumber, type, difficulty, title, clueText, answer, locationName, locationCoords, points, hint, hasQR: hasQR !== undefined ? hasQR : true, isMediaEnabled: isMediaEnabled !== undefined ? isMediaEnabled : true, mediaType, mediaUrl };
 
     const clue = await Clue.create(clueData);
 

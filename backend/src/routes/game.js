@@ -69,6 +69,7 @@ router.get('/current-clue', requireTeam, async (req, res) => {
             points: currentClue.points,
             hint: attempt && attempt.attemptCount >= 3 ? currentClue.hint : null,
             hasQR: currentClue.hasQR !== false,
+            isMediaEnabled: currentClue.isMediaEnabled !== false,
             mediaType: currentClue.mediaType,
             mediaUrl: currentClue.mediaUrl,
         },
