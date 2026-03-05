@@ -43,4 +43,13 @@ const generateQRCode = async (clueId) => {
     });
 };
 
-module.exports = { generateQRHash, verifyQRHash, generateQRCode };
+/**
+ * Generate a short 8-char uppercase token for manual entry
+ * @param {string} clueId
+ * @returns {string} 8-char uppercase token
+ */
+const generateQRToken = (clueId) => {
+    return generateQRHash(clueId).slice(0, 8).toUpperCase();
+};
+
+module.exports = { generateQRHash, verifyQRHash, generateQRCode, generateQRToken };

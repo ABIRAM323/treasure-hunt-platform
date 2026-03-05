@@ -138,6 +138,89 @@ export default function AdminDashboard() {
         setQrModal(data);
     };
 
+    const downloadQRPng = (qrData, withLabel = true) => {
+        const img = new Image();
+        img.onload = () => {
+            const headerH = withLabel ? 60 : 0;
+            const locH = withLabel && qrData.locationName ? 36 : 0;
+            const tokenH = withLabel && qrData.qrToken ? 48 : 0;
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height + headerH + locH + tokenH;
+            const ctx = canvas.getContext('2d');
+
+            // Background
+            ctx.fillStyle = '#0a0a1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (withLabel) {
+                // ── Header stripe ──
+                ctx.fillStyle = '#00ff88';
+                ctx.fillRect(0, 0, canvas.width, headerH);
+
+                // Clue number
+                ctx.fillStyle = '#0a0a1a';
+                ctx.font = `bold ${Math.round(headerH * 0.55)}px monospace`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`Clue #${qrData.clueNumber ?? '?'}`, canvas.width / 2, headerH / 2);
+
+                // Title
+                if (qrData.clueTitle) {
+                    ctx.font = `${Math.round(headerH * 0.28)}px monospace`;
+                    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+                    ctx.fillText(qrData.clueTitle, canvas.width / 2, headerH * 0.78);
+                }
+            }
+
+            // ── QR image ──
+            ctx.drawImage(img, 0, headerH, img.width, img.height);
+
+            const belowQR = headerH + img.height;
+
+            // ── Location footer ──
+            if (withLabel && qrData.locationName) {
+                ctx.fillStyle = '#111122';
+                ctx.fillRect(0, belowQR, canvas.width, locH);
+                ctx.fillStyle = '#00ff88';
+                ctx.font = `${Math.round(locH * 0.45)}px monospace`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`📍 ${qrData.locationName}`, canvas.width / 2, belowQR + locH / 2);
+            }
+
+            // ── Token row ──
+            if (withLabel && qrData.qrToken) {
+                const tokenY = belowQR + locH;
+                ctx.fillStyle = '#0d0d22';
+                ctx.fillRect(0, tokenY, canvas.width, tokenH);
+
+                // Separator line
+                ctx.fillStyle = 'rgba(255,200,0,0.3)';
+                ctx.fillRect(0, tokenY, canvas.width, 1);
+
+                // Label
+                ctx.fillStyle = 'rgba(255,200,0,0.55)';
+                ctx.font = `${Math.round(tokenH * 0.22)}px monospace`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
+                ctx.fillText('TOKEN (type if you cannot scan)', canvas.width / 2, tokenY + 5);
+
+                // Token value
+                ctx.fillStyle = '#ffe000';
+                ctx.font = `bold ${Math.round(tokenH * 0.44)}px monospace`;
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(qrData.qrToken, canvas.width / 2, tokenY + tokenH - 6);
+            }
+
+            const link = document.createElement('a');
+            link.download = `qr-clue-${qrData.clueNumber ?? 'x'}${withLabel ? '-labeled' : ''}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        };
+        img.src = qrData.qrDataUrl;
+    };
+
     // Event controls
     const startEvent = async (duration) => {
         await api.post('/admin/event/start', { duration });
@@ -213,16 +296,88 @@ export default function AdminDashboard() {
             {/* QR Modal */}
             {qrModal && (
                 <div className="overlay" onClick={() => setQrModal(null)}>
-                    <div className="modal" onClick={(e) => e.stopPropagation()}>
-                        <h3 style={{ marginBottom: '0.5rem' }}>QR Code</h3>
-                        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
-                            Location: {qrModal.locationName || 'N/A'}
+                    <div className="modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '400px' }}>
+                        <h3 style={{ marginBottom: '0.25rem' }}>
+                            QR Code — Clue #{qrModal.clueNumber ?? '?'}
+                        </h3>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '1rem' }}>
+                            {qrModal.clueTitle && <span style={{ color: 'var(--neon-cyan)', marginRight: '0.5rem' }}>{qrModal.clueTitle}</span>}
+                            {qrModal.locationName && <>📍 {qrModal.locationName}</>}
                         </p>
-                        <img src={qrModal.qrDataUrl} alt="QR Code" style={{ width: '100%', borderRadius: 'var(--radius-md)' }} />
-                        <p style={{ marginTop: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)', wordBreak: 'break-all' }}>
-                            Clue ID: {qrModal.clueId}
+
+                        {/* Preview with number badge overlay */}
+                        <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+                            <img
+                                src={qrModal.qrDataUrl}
+                                alt="QR Code"
+                                style={{ width: '100%', borderRadius: 'var(--radius-md)', display: 'block' }}
+                            />
+                            <div style={{
+                                position: 'absolute', top: '8px', left: '8px',
+                                background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
+                                border: '1px solid var(--neon-green)', borderRadius: '6px',
+                                padding: '2px 10px', fontFamily: 'var(--font-mono)',
+                                fontSize: '0.85rem', color: 'var(--neon-green)', fontWeight: 700,
+                                letterSpacing: '0.05em',
+                            }}>
+                                #{qrModal.clueNumber ?? '?'}
+                            </div>
+                        </div>
+
+                        {/* Token display */}
+                        {qrModal.qrToken && (
+                            <div style={{
+                                marginTop: '0.75rem',
+                                background: 'rgba(255,200,0,0.08)',
+                                border: '1px solid rgba(255,200,0,0.35)',
+                                borderRadius: 'var(--radius-md)',
+                                padding: '0.6rem 1rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                gap: '0.75rem',
+                            }}>
+                                <div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '2px' }}>
+                                        Manual Token (teams type this)
+                                    </div>
+                                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.4rem', fontWeight: 700, color: 'var(--neon-yellow)', letterSpacing: '0.25em' }}>
+                                        {qrModal.qrToken}
+                                    </div>
+                                </div>
+                                <button
+                                    className="btn btn-ghost btn-sm"
+                                    style={{ borderColor: 'rgba(255,200,0,0.3)', color: 'var(--neon-yellow)', fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+                                    onClick={() => navigator.clipboard?.writeText(qrModal.qrToken)}
+                                    title="Copy token"
+                                >
+                                    📋 Copy
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Download options */}
+                        <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                            <button
+                                className="btn btn-primary btn-sm"
+                                style={{ flex: 1 }}
+                                onClick={() => downloadQRPng(qrModal, true)}
+                            >
+                                📥 Download with Label
+                            </button>
+                            <button
+                                className="btn btn-ghost btn-sm"
+                                style={{ flex: 1 }}
+                                onClick={() => downloadQRPng(qrModal, false)}
+                            >
+                                📥 QR Only
+                            </button>
+                        </div>
+
+                        <p style={{ marginTop: '0.75rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--text-muted)', wordBreak: 'break-all' }}>
+                            ID: {qrModal.clueId}
                         </p>
-                        <button className="btn btn-ghost w-full" style={{ marginTop: '1rem' }} onClick={() => setQrModal(null)}>Close</button>
+                        <button className="btn btn-ghost w-full" style={{ marginTop: '0.75rem' }} onClick={() => setQrModal(null)}>Close</button>
                     </div>
                 </div>
             )}

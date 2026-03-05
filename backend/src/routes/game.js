@@ -6,7 +6,7 @@ const Event = require('../models/Event');
 const { requireTeam } = require('../middleware/auth');
 const { submissionLimiter } = require('../middleware/rateLimiter');
 const { calculateScore, isFinalBossUnlocked, FINAL_BOSS_BONUS } = require('../utils/scoring');
-const { verifyQRHash } = require('../utils/qrHelper');
+const { verifyQRHash, generateQRToken } = require('../utils/qrHelper');
 
 const router = express.Router();
 
@@ -184,6 +184,52 @@ router.post('/scan-qr', requireTeam, submissionLimiter, async (req, res) => {
     res.json({
         success: true,
         message: '✅ QR Verified! Clue unlocked!',
+        score: team.score,
+    });
+});
+
+// POST validate typed QR token (fallback for teams who can't scan)
+router.post('/submit-token', requireTeam, submissionLimiter, async (req, res) => {
+    const { token } = req.body;
+    if (!token || token.trim().length === 0) {
+        return res.status(400).json({ success: false, message: 'Token is required' });
+    }
+
+    const event = await Event.findOne();
+    if (event && event.isLocked) {
+        return res.status(403).json({ success: false, message: 'Event has ended.' });
+    }
+
+    const team = await Team.findById(req.user.id).populate('clueOrder');
+    if (!team) return res.status(404).json({ success: false, message: 'Team not found' });
+
+    if (team.currentClueIndex >= team.clueOrder.length) {
+        return res.status(400).json({ success: false, message: 'No more clues to submit.' });
+    }
+
+    const currentClue = await Clue.findById(team.clueOrder[team.currentClueIndex]._id);
+
+    // Only usable for physical QR clues
+    if (currentClue.type !== 'physical' || currentClue.hasQR === false) {
+        return res.status(400).json({ success: false, message: 'Token entry is only for physical QR clues.' });
+    }
+
+    // Generate expected token for this clue and compare
+    const expectedToken = generateQRToken(currentClue._id.toString());
+    if (token.trim().toUpperCase() !== expectedToken) {
+        return res.status(400).json({ success: false, message: '❌ Wrong token. Double-check the code on the QR sheet.' });
+    }
+
+    let attempt = await Attempt.findOne({ teamId: team._id, clueId: currentClue._id });
+    if (!attempt) {
+        attempt = await Attempt.create({ teamId: team._id, clueId: currentClue._id, attemptCount: 0 });
+    }
+
+    await advanceTeam(team, currentClue, attempt, event, req.app.get('io'));
+
+    res.json({
+        success: true,
+        message: '✅ Token accepted! Clue unlocked!',
         score: team.score,
     });
 });

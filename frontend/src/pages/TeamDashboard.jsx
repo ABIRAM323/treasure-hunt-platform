@@ -52,6 +52,9 @@ export default function TeamDashboard() {
     const [submitting, setSubmitting] = useState(false);
     const [feedback, setFeedback] = useState(null); // { type: 'success'|'error', msg }
     const [showQR, setShowQR] = useState(false);
+    const [showTokenInput, setShowTokenInput] = useState(false);
+    const [token, setToken] = useState('');
+    const [tokenSubmitting, setTokenSubmitting] = useState(false);
     const [attempts, setAttempts] = useState(0);
 
     const fetchClue = useCallback(async () => {
@@ -63,6 +66,8 @@ export default function TeamDashboard() {
             setAnswer('');
             setFeedback(null);
             setShowQR(false);
+            setShowTokenInput(false);
+            setToken('');
         } catch (err) {
             if (err.response?.status === 401) navigate('/login');
         } finally {
@@ -96,6 +101,22 @@ export default function TeamDashboard() {
     const handleQRSuccess = () => {
         setFeedback({ type: 'success', msg: '✅ QR Verified! Loading next clue…' });
         setTimeout(() => fetchClue(), 2000);
+    };
+
+    const handleTokenSubmit = async (e) => {
+        e.preventDefault();
+        if (!token.trim()) return;
+        setTokenSubmitting(true);
+        setFeedback(null);
+        try {
+            const { data } = await api.post('/game/submit-token', { token: token.trim() });
+            setFeedback({ type: 'success', msg: data.message });
+            setTimeout(() => fetchClue(), 1800);
+        } catch (err) {
+            setFeedback({ type: 'error', msg: err.response?.data?.message || 'Invalid token' });
+        } finally {
+            setTokenSubmitting(false);
+        }
     };
 
     if (loading) return (
@@ -295,6 +316,73 @@ export default function TeamDashboard() {
                                     {showQR && (
                                         <div style={{ marginTop: '1.25rem' }}>
                                             <QRScanner onSuccess={handleQRSuccess} />
+                                        </div>
+                                    )}
+
+                                    {/* Manual token entry — fallback when camera is not available */}
+                                    {clue.type === 'physical' && (
+                                        <div style={{ marginTop: '0.75rem' }}>
+                                            <button
+                                                className="btn btn-ghost btn-sm w-full"
+                                                onClick={() => { setShowTokenInput(v => !v); setToken(''); setFeedback(null); }}
+                                                style={{ borderStyle: 'dashed', borderColor: 'rgba(255,200,0,0.3)', color: 'var(--neon-yellow)', fontSize: '0.8rem' }}
+                                            >
+                                                {showTokenInput ? '✕ Hide Token Entry' : '⌨️ Type Token Instead'}
+                                            </button>
+
+                                            {showTokenInput && (
+                                                <form onSubmit={handleTokenSubmit} style={{ marginTop: '0.75rem' }}>
+                                                    <div style={{
+                                                        background: 'rgba(255,200,0,0.06)',
+                                                        border: '1px solid rgba(255,200,0,0.25)',
+                                                        borderRadius: 'var(--radius-md)',
+                                                        padding: '1rem',
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: '0.75rem',
+                                                    }}>
+                                                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>
+                                                            💡 Find the 8-character code printed at the bottom of the QR sheet at this location.
+                                                        </p>
+                                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                            <input
+                                                                className="form-input"
+                                                                value={token}
+                                                                onChange={e => setToken(e.target.value.toUpperCase().slice(0, 8))}
+                                                                placeholder="e.g. A3F9B21C"
+                                                                maxLength={8}
+                                                                required
+                                                                style={{
+                                                                    flex: 1,
+                                                                    fontFamily: 'var(--font-mono)',
+                                                                    fontSize: '1.2rem',
+                                                                    letterSpacing: '0.2em',
+                                                                    textAlign: 'center',
+                                                                    textTransform: 'uppercase',
+                                                                    color: 'var(--neon-yellow)',
+                                                                }}
+                                                            />
+                                                            <button
+                                                                className="btn btn-primary"
+                                                                type="submit"
+                                                                disabled={tokenSubmitting || token.length !== 8}
+                                                                style={{ whiteSpace: 'nowrap' }}
+                                                            >
+                                                                {tokenSubmitting ? <><span className="spinner" style={{ width: 14, height: 14, borderWidth: 2 }} /> Checking…</> : '✓ Verify'}
+                                                            </button>
+                                                        </div>
+                                                        <div style={{ display: 'flex', gap: '4px' }}>
+                                                            {Array.from({ length: 8 }).map((_, i) => (
+                                                                <div key={i} style={{
+                                                                    flex: 1, height: 3, borderRadius: 2,
+                                                                    background: i < token.length ? 'var(--neon-yellow)' : 'var(--border-subtle)',
+                                                                    transition: 'background 0.15s',
+                                                                }} />
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            )}
                                         </div>
                                     )}
                                 </div>

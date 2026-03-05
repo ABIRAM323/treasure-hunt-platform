@@ -6,7 +6,7 @@ const Attempt = require('../models/Attempt');
 const Event = require('../models/Event');
 const { requireAdmin } = require('../middleware/auth');
 const { buildClueOrder } = require('../utils/scoring');
-const { generateQRCode, generateQRHash } = require('../utils/qrHelper');
+const { generateQRCode, generateQRHash, generateQRToken } = require('../utils/qrHelper');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -251,7 +251,8 @@ router.get('/clues/:id/qr', requireAdmin, async (req, res) => {
     if (!clue) return res.status(404).json({ success: false, message: 'Clue not found' });
 
     const qrDataUrl = await generateQRCode(clue._id.toString());
-    res.json({ success: true, qrDataUrl, clueId: clue._id, locationName: clue.locationName });
+    const qrToken = generateQRToken(clue._id.toString());
+    res.json({ success: true, qrDataUrl, qrToken, clueId: clue._id, locationName: clue.locationName, clueNumber: clue.clueNumber, clueTitle: clue.title });
 });
 
 // POST upload media
